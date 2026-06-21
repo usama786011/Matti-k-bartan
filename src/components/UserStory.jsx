@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Heart, Globe, Users, PenTool, Play, Star, ChevronLeft, ChevronRight,
   ArrowRight, ShieldCheck, Truck, Gift, Mail, ArrowUpRight, Flame, ShoppingCart,
-  Compass, Feather, Droplet, Sun, Wind
+  Compass, Feather, Droplet, Sun, Wind, Camera, Send, CheckCircle
 } from 'lucide-react';
 import { useProducts } from '../context/ProductContext';
 import { useCart } from '../context/CartContext';
@@ -15,6 +15,13 @@ const UserStory = ({ onViewChange }) => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [emailInput, setEmailInput] = useState('');
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [reviews, setReviews] = useState(() => {
+    const saved = localStorage.getItem('rp_reviews');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [reviewForm, setReviewForm] = useState({ name: '', email: '', phone: '', rating: 0, comment: '', image: null });
+  const [reviewDone, setReviewDone] = useState(false);
+  const [showAllReviews, setShowAllReviews] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
@@ -31,39 +38,6 @@ const UserStory = ({ onViewChange }) => {
     }
   };
 
-  // Testimonials state
-  const testimonials = [
-    {
-      name: "Amina Rafique",
-      role: "Home Chef, Lahore",
-      review: "Khaane ka maza hi badal gaya! The clay handi gives a distinct earthy aroma and rich taste that you can never get in metal pans. Absolute love!",
-      rating: 5,
-      avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&q=80"
-    },
-    {
-      name: "Dr. Farhan Jameel",
-      role: "Nutritionist, Islamabad",
-      review: "Clay cookware naturally neutralizes the pH balance of food because of its alkaline nature. Highly recommend it to anyone seeking pure, healthy cooking.",
-      rating: 5,
-      avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&q=80"
-    },
-    {
-      name: "Zainab Multan",
-      role: "Traditional Art Collector",
-      review: "The craftsmanship is top-notch. These hand-painted designs represent the ancient Indus Valley history beautifully. Adds so much character to my kitchen.",
-      rating: 5,
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&q=80"
-    }
-  ];
-
-  const [activeSlide, setActiveSlide] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % testimonials.length);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, []);
 
   const categories = [
     { name: "Handi & Pots", count: "12 Items", img: "https://images.unsplash.com/photo-1590073242678-70ee3fc28e84?w=400&q=80" },
@@ -421,82 +395,329 @@ const UserStory = ({ onViewChange }) => {
         </motion.div>
       </section>
 
-      {/* 11. TESTIMONIALS SLIDER */}
+      {/* 11. CUSTOMER REVIEWS */}
       <section style={{ marginBottom: '8rem' }}>
-        <div className="glass-morphism" style={{ padding: '3rem 2rem', background: 'white', overflow: 'hidden', position: 'relative', maxWidth: '800px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-            <span style={{ color: 'var(--primary)', fontWeight: '700', fontSize: '0.75rem', letterSpacing: '3px', textTransform: 'uppercase' }}>Stories of Joy</span>
-            <h2 style={{ fontSize: '2rem', marginTop: '0.5rem' }}>What People Are Saying</h2>
-          </div>
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+          <span style={{ color: 'var(--primary)', fontWeight: '700', fontSize: '0.82rem', letterSpacing: '3px', textTransform: 'uppercase' }}>Customer Stories</span>
+          <h2 style={{ fontSize: isMobile ? '2rem' : '3rem', marginTop: '0.5rem' }}>Reviews & Experiences</h2>
+        </div>
 
-          <div style={{ position: 'relative', minHeight: '180px', maxWidth: '650px', margin: '0 auto', textAlign: 'center' }}>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeSlide}
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -50 }}
-                transition={{ duration: 0.4 }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '0.2rem', marginBottom: '1.5rem' }}>
-                  {[...Array(testimonials[activeSlide].rating)].map((_, i) => (
-                     <Star key={i} size={20} fill="#f59e0b" color="#f59e0b" />
-                  ))}
-                </div>
-                <p style={{ fontSize: '1.1rem', fontStyle: 'italic', lineHeight: '1.6', color: 'var(--secondary)', marginBottom: '2rem' }}>
-                  "{testimonials[activeSlide].review}"
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+          gap: '2.5rem',
+          alignItems: 'start',
+        }}>
+
+          {/* ── LEFT: Latest Reviews ── */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', order: isMobile ? 2 : 1 }}>
+            <h3 style={{ fontSize: '1.1rem', color: 'var(--secondary)', marginBottom: '0.25rem', fontWeight: '700' }}>
+              Latest Reviews <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: '400' }}>({reviews.length})</span>
+            </h3>
+
+            {reviews.length === 0 ? (
+              <div style={{
+                textAlign: 'center', padding: '3rem 1rem',
+                background: '#fafafa', borderRadius: '18px',
+                border: '1.5px dashed #eee',
+              }}>
+                <Star size={32} color="#e5e7eb" strokeWidth={1.5} />
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginTop: '0.75rem' }}>
+                  Koi review nahi abhi tak — pehle aap likhein!
                 </p>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1.2rem' }}>
-                  <img
-                    src={testimonials[activeSlide].avatar}
-                    alt={testimonials[activeSlide].name}
-                    style={{ width: '56px', height: '56px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary-light)' }}
-                  />
-                  <div style={{ textAlign: 'left' }}>
-                    <h4 style={{ fontSize: '1.1rem', fontWeight: 'bold' }}>{testimonials[activeSlide].name}</h4>
-                    <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{testimonials[activeSlide].role}</span>
-                  </div>
+              </div>
+            ) : (
+              <>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <AnimatePresence>
+                    {(showAllReviews ? [...reviews].reverse() : [...reviews].reverse().slice(0, 5)).map((r) => (
+                      <motion.div
+                        key={r.id}
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.35 }}
+                        style={{
+                          background: 'white', borderRadius: '18px',
+                          padding: '1.1rem 1.25rem',
+                          border: '1px solid rgba(194,65,12,0.07)',
+                          boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
+                        }}
+                      >
+                        <div style={{ display: 'flex', gap: '0.85rem', alignItems: 'flex-start' }}>
+                          {r.image ? (
+                            <img src={r.image} alt={r.name}
+                              style={{ width: '44px', height: '44px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+                          ) : (
+                            <div style={{
+                              width: '44px', height: '44px', borderRadius: '50%', flexShrink: 0,
+                              background: `hsl(${(r.name.charCodeAt(0) * 37) % 360}, 55%, 88%)`,
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              fontWeight: '800', fontSize: '1rem',
+                              color: `hsl(${(r.name.charCodeAt(0) * 37) % 360}, 55%, 35%)`,
+                            }}>
+                              {r.name.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
+                              <span style={{ fontWeight: '700', fontSize: '0.92rem', color: 'var(--secondary)' }}>{r.name}</span>
+                              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{r.date}</span>
+                            </div>
+                            <div style={{ display: 'flex', gap: '0.15rem', marginBottom: '0.5rem' }}>
+                              {[...Array(5)].map((_, i) => (
+                                <Star key={i} size={13}
+                                  fill={i < r.rating ? '#f59e0b' : '#e5e7eb'}
+                                  color={i < r.rating ? '#f59e0b' : '#e5e7eb'} />
+                              ))}
+                            </div>
+                            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: '1.6', margin: 0 }}>
+                              {r.comment}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
                 </div>
-              </motion.div>
-            </AnimatePresence>
+
+                {reviews.length > 5 && (
+                  <button
+                    onClick={() => setShowAllReviews(p => !p)}
+                    style={{
+                      width: '100%', padding: '0.75rem',
+                      borderRadius: '14px', border: '1.5px solid rgba(194,65,12,0.15)',
+                      background: 'transparent', color: 'var(--primary)',
+                      fontWeight: '700', fontSize: '0.88rem', cursor: 'pointer',
+                      transition: 'all 0.2s', marginTop: '0.25rem',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = 'var(--primary-light)'}
+                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                  >
+                    {showAllReviews ? '↑ Show Less' : `Read All ${reviews.length} Reviews ↓`}
+                  </button>
+                )}
+              </>
+            )}
           </div>
 
-          {/* Navigation Controls */}
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '2rem' }}>
-            <button
-              onClick={() => setActiveSlide((prev) => (prev - 1 + testimonials.length) % testimonials.length)}
-              style={{
-                width: '44px',
-                height: '44px',
-                borderRadius: '50%',
-                background: '#f5f5f5',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--secondary)'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.background = 'var(--primary-light)'}
-              onMouseLeave={(e) => e.currentTarget.style.background = '#f5f5f5'}
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button
-              onClick={() => setActiveSlide((prev) => (prev + 1) % testimonials.length)}
-              style={{
-                width: '44px',
-                height: '44px',
-                borderRadius: '50%',
-                background: '#f5f5f5',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'var(--secondary)'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.background = 'var(--primary-light)'}
-              onMouseLeave={(e) => e.currentTarget.style.background = '#f5f5f5'}
-            >
-              <ChevronRight size={20} />
-            </button>
+          {/* ── RIGHT: Submit Review Form ── */}
+          <div style={{
+            background: 'white', borderRadius: '24px',
+            padding: isMobile ? '1.5rem' : '2rem',
+            border: '1px solid rgba(194,65,12,0.08)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.06)',
+            order: isMobile ? 1 : 2,
+          }}>
+            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.35rem', color: 'var(--secondary)' }}>Share Your Experience</h3>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+              Your review helps others discover authentic clay crafts.
+            </p>
+
+            <AnimatePresence mode="wait">
+              {reviewDone ? (
+                <motion.div
+                  key="done"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  style={{
+                    textAlign: 'center', padding: '2.5rem 1rem',
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem',
+                  }}
+                >
+                  <CheckCircle size={48} color="var(--success)" strokeWidth={1.5} />
+                  <h4 style={{ fontSize: '1.15rem', color: 'var(--secondary)' }}>Shukriya!</h4>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>Your review has been posted.</p>
+                  <button
+                    onClick={() => { setReviewDone(false); setReviewForm({ name: '', email: '', phone: '', rating: 0, comment: '', image: null }); }}
+                    style={{
+                      marginTop: '0.5rem', padding: '0.6rem 1.5rem',
+                      borderRadius: '100px', border: 'none', cursor: 'pointer',
+                      background: 'var(--primary-light)', color: 'var(--primary)',
+                      fontWeight: '700', fontSize: '0.85rem',
+                    }}
+                  >
+                    Write Another
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.form
+                  key="form"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const hasContact = reviewForm.email.trim() || reviewForm.phone.trim();
+                    if (!reviewForm.name.trim() || !reviewForm.comment.trim() || !hasContact || reviewForm.rating === 0) return;
+                    const newReview = {
+                      id: Date.now(),
+                      name: reviewForm.name.trim(),
+                      email: reviewForm.email.trim(),
+                      phone: reviewForm.phone.trim(),
+                      rating: reviewForm.rating,
+                      comment: reviewForm.comment.trim(),
+                      image: reviewForm.image,
+                      date: new Date().toLocaleString('en-PK', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }),
+                    };
+                    const updated = [...reviews, newReview];
+                    setReviews(updated);
+                    localStorage.setItem('rp_reviews', JSON.stringify(updated));
+                    setReviewDone(true);
+                  }}
+                  style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
+                >
+                  {/* Star Rating */}
+                  <div>
+                    <label style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--secondary)', display: 'block', marginBottom: '0.4rem' }}>
+                      Rating * {reviewForm.rating === 0 && <span style={{ color: 'var(--danger)', fontWeight: '400', fontSize: '0.75rem' }}>— star select karna zaroori hai</span>}
+                    </label>
+                    <div style={{ display: 'flex', gap: '0.35rem' }}>
+                      {[1,2,3,4,5].map(n => (
+                        <button
+                          key={n} type="button"
+                          onClick={() => setReviewForm(f => ({ ...f, rating: n }))}
+                          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '2px' }}
+                        >
+                          <Star size={28}
+                            fill={n <= reviewForm.rating ? '#f59e0b' : '#e5e7eb'}
+                            color={n <= reviewForm.rating ? '#f59e0b' : '#e5e7eb'}
+                            style={{ transition: 'all 0.15s' }}
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Name */}
+                  <div>
+                    <label style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--secondary)', display: 'block', marginBottom: '0.4rem' }}>Your Name *</label>
+                    <input
+                      type="text" required
+                      value={reviewForm.name}
+                      onChange={e => setReviewForm(f => ({ ...f, name: e.target.value }))}
+                      placeholder="e.g. Fatima Khan"
+                      style={{
+                        width: '100%', padding: '0.75rem 1rem', borderRadius: '12px',
+                        border: '1.5px solid #eee', background: '#fafafa',
+                        fontSize: '0.88rem', outline: 'none', boxSizing: 'border-box',
+                        transition: 'border 0.2s',
+                      }}
+                      onFocus={e => e.target.style.borderColor = 'var(--primary)'}
+                      onBlur={e => e.target.style.borderColor = '#eee'}
+                    />
+                  </div>
+
+                  {/* Email + Phone */}
+                  <div>
+                    <label style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--secondary)', display: 'block', marginBottom: '0.4rem' }}>
+                      Contact{' '}
+                      <span style={{ color: 'var(--danger)', fontWeight: '400', fontSize: '0.75rem' }}>* kam az kam ek zaroori</span>
+                    </label>
+                    <div style={{ display: 'flex', gap: '0.65rem', flexDirection: isMobile ? 'column' : 'row' }}>
+                      <input
+                        type="email"
+                        value={reviewForm.email}
+                        onChange={e => setReviewForm(f => ({ ...f, email: e.target.value }))}
+                        placeholder="Email (optional)"
+                        style={{
+                          flex: 1, padding: '0.75rem 1rem', borderRadius: '12px',
+                          border: '1.5px solid #eee', background: '#fafafa',
+                          fontSize: '0.88rem', outline: 'none', boxSizing: 'border-box',
+                          transition: 'border 0.2s',
+                        }}
+                        onFocus={e => e.target.style.borderColor = 'var(--primary)'}
+                        onBlur={e => e.target.style.borderColor = '#eee'}
+                      />
+                      <input
+                        type="tel"
+                        value={reviewForm.phone}
+                        onChange={e => setReviewForm(f => ({ ...f, phone: e.target.value }))}
+                        placeholder="Phone (optional)"
+                        style={{
+                          flex: 1, padding: '0.75rem 1rem', borderRadius: '12px',
+                          border: '1.5px solid #eee', background: '#fafafa',
+                          fontSize: '0.88rem', outline: 'none', boxSizing: 'border-box',
+                          transition: 'border 0.2s',
+                        }}
+                        onFocus={e => e.target.style.borderColor = 'var(--primary)'}
+                        onBlur={e => e.target.style.borderColor = '#eee'}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Comment */}
+                  <div>
+                    <label style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--secondary)', display: 'block', marginBottom: '0.4rem' }}>Your Review *</label>
+                    <textarea
+                      required rows={4}
+                      value={reviewForm.comment}
+                      onChange={e => setReviewForm(f => ({ ...f, comment: e.target.value }))}
+                      placeholder="Share your experience with the product..."
+                      style={{
+                        width: '100%', padding: '0.75rem 1rem', borderRadius: '12px',
+                        border: '1.5px solid #eee', background: '#fafafa',
+                        fontSize: '0.88rem', outline: 'none', resize: 'vertical',
+                        fontFamily: 'inherit', lineHeight: '1.6', boxSizing: 'border-box',
+                        transition: 'border 0.2s',
+                      }}
+                      onFocus={e => e.target.style.borderColor = 'var(--primary)'}
+                      onBlur={e => e.target.style.borderColor = '#eee'}
+                    />
+                  </div>
+
+                  {/* Image Upload (optional) */}
+                  <div>
+                    <label style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--secondary)', display: 'block', marginBottom: '0.4rem' }}>
+                      Photo <span style={{ color: 'var(--text-muted)', fontWeight: '400' }}>(optional)</span>
+                    </label>
+                    <label style={{
+                      display: 'flex', alignItems: 'center', gap: '0.6rem',
+                      padding: '0.7rem 1rem', borderRadius: '12px',
+                      border: '1.5px dashed #ddd', background: '#fafafa',
+                      cursor: 'pointer', fontSize: '0.85rem', color: 'var(--text-muted)',
+                      transition: 'border 0.2s',
+                    }}
+                      onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--primary)'}
+                      onMouseLeave={e => e.currentTarget.style.borderColor = '#ddd'}
+                    >
+                      <Camera size={16} color="var(--primary)" />
+                      {reviewForm.image ? 'Photo selected ✓' : 'Upload a photo of your product'}
+                      <input
+                        type="file" accept="image/*" hidden
+                        onChange={e => {
+                          const file = e.target.files[0];
+                          if (!file) return;
+                          const reader = new FileReader();
+                          reader.onload = ev => setReviewForm(f => ({ ...f, image: ev.target.result }));
+                          reader.readAsDataURL(file);
+                        }}
+                      />
+                    </label>
+                  </div>
+
+                  {/* Submit */}
+                  <button
+                    type="submit"
+                    style={{
+                      width: '100%', padding: '0.85rem',
+                      borderRadius: '14px', border: 'none', cursor: 'pointer',
+                      background: 'linear-gradient(135deg, var(--primary), #e55a00)',
+                      color: 'white', fontWeight: '700', fontSize: '0.95rem',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      gap: '0.5rem', boxShadow: '0 6px 20px rgba(194,65,12,0.25)',
+                      transition: 'all 0.2s', marginTop: '0.25rem',
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                    onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+                  >
+                    <Send size={16} /> Post Review
+                  </button>
+                </motion.form>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </section>
