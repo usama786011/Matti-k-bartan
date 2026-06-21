@@ -15,6 +15,13 @@ const UserStory = ({ onViewChange }) => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [emailInput, setEmailInput] = useState('');
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const h = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', h);
+    return () => window.removeEventListener('resize', h);
+  }, []);
 
   const handleSubscribe = () => {
     if (emailInput.trim()) {
@@ -103,99 +110,123 @@ const UserStory = ({ onViewChange }) => {
       
       {/* 1. HERO BANNER */}
       <section style={{
-        height: '85vh',
+        height: isMobile ? '60vh' : '85vh',
+        minHeight: isMobile ? '420px' : 'unset',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
         position: 'relative',
         overflow: 'hidden',
-        borderRadius: '40px',
-        margin: '1.5rem 0',
-        background: 'linear-gradient(rgba(45, 26, 3, 0.52), rgba(45, 26, 3, 0.65)), url("https://images.unsplash.com/photo-1565191999001-551c187427bb?w=1600&q=80")',
+        borderRadius: isMobile ? '20px' : '40px',
+        margin: isMobile ? '0.75rem 0' : '1.5rem 0',
+        background: 'linear-gradient(rgba(45, 26, 3, 0.55), rgba(45, 26, 3, 0.7)), url("https://images.unsplash.com/photo-1565191999001-551c187427bb?w=1600&q=80")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         color: 'white',
         boxShadow: 'var(--shadow-lg)'
       }}>
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
-          style={{ padding: '0 2rem', zIndex: 2 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          style={{ padding: isMobile ? '0 1.25rem' : '0 2rem', zIndex: 2, width: '100%' }}
         >
           <span style={{
-            letterSpacing: '6px',
+            letterSpacing: isMobile ? '3px' : '6px',
             textTransform: 'uppercase',
-            fontSize: '0.85rem',
+            fontSize: isMobile ? '0.65rem' : '0.85rem',
             fontWeight: '800',
             color: 'var(--primary-light)',
-            marginBottom: '1.5rem',
+            marginBottom: isMobile ? '0.85rem' : '1.5rem',
             display: 'block'
           }}>
             🏺 Ancient Artistry • Crafted for Modern Life
           </span>
           <h1 style={{
-            fontSize: '5rem',
-            lineHeight: '1.1',
+            fontSize: isMobile ? '2rem' : '5rem',
+            lineHeight: isMobile ? '1.25' : '1.1',
             fontFamily: 'var(--font-heading)',
             color: 'white',
-            marginBottom: '1.75rem',
-            maxWidth: '950px',
+            marginBottom: isMobile ? '1rem' : '1.75rem',
+            maxWidth: isMobile ? '100%' : '950px',
             textShadow: '0 4px 15px rgba(0,0,0,0.3)',
             fontWeight: '300'
           }}>
-            Whispers of Earth, <span style={{ fontStyle: 'italic', fontWeight: '500', color: 'var(--primary-light)' }}>Molded by Hand</span>
+            Whispers of Earth,{' '}
+            <span style={{ fontStyle: 'italic', fontWeight: '500', color: 'var(--primary-light)' }}>
+              Molded by Hand
+            </span>
           </h1>
-          <p style={{
-            maxWidth: '700px',
-            margin: '0 auto 3rem',
-            fontSize: '1.25rem',
-            opacity: 0.95,
-            fontWeight: '300',
-            lineHeight: '1.8',
-            color: '#f5ebe0',
-            textShadow: '0 2px 10px rgba(0,0,0,0.2)'
+          {!isMobile && (
+            <p style={{
+              maxWidth: '700px',
+              margin: '0 auto 3rem',
+              fontSize: '1.25rem',
+              opacity: 0.95,
+              fontWeight: '300',
+              lineHeight: '1.8',
+              color: '#f5ebe0',
+              textShadow: '0 2px 10px rgba(0,0,0,0.2)'
+            }}>
+              Explore premium non-toxic cookware, custom serving pots, and cooling water coolers created from rich Indus Valley silt.
+            </p>
+          )}
+          {isMobile && (
+            <p style={{
+              margin: '0 auto 1.5rem',
+              fontSize: '0.88rem',
+              opacity: 0.88,
+              fontWeight: '300',
+              lineHeight: '1.65',
+              color: '#f5ebe0',
+              maxWidth: '280px',
+            }}>
+              Premium handcrafted clay cookware from the Indus Valley.
+            </p>
+          )}
+          <div style={{
+            display: 'flex', gap: isMobile ? '0.75rem' : '1.5rem',
+            justifyContent: 'center', flexWrap: 'wrap',
           }}>
-            Explore premium non-toxic cookware, custom serving pots, and cooling water coolers created from rich Indus Valley silt.
-          </p>
-          <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
             <button
               onClick={() => onViewChange('catalog')}
               className="btn-primary"
               style={{
-                padding: '1.1rem 2.8rem',
-                fontSize: '1rem',
+                padding: isMobile ? '0.75rem 1.75rem' : '1.1rem 2.8rem',
+                fontSize: isMobile ? '0.85rem' : '1rem',
                 borderRadius: '100px',
                 boxShadow: '0 10px 25px rgba(194, 65, 12, 0.4)'
               }}
             >
-              Explore Collection <ArrowRight size={18} />
+              Explore Collection <ArrowRight size={isMobile ? 15 : 18} />
             </button>
-            <button
-              onClick={() => {
-                const doc = document.getElementById('heritage-section');
-                if (doc) doc.scrollIntoView({ behavior: 'smooth' });
-              }}
-              style={{
-                padding: '1.1rem 2.8rem',
-                fontSize: '1rem',
-                color: 'white',
-                border: '1.5px solid rgba(255, 255, 255, 0.4)',
-                background: 'rgba(255, 255, 255, 0.1)',
-                borderRadius: '100px',
-                backdropFilter: 'blur(10px)',
-                fontWeight: '600'
-              }}
-            >
-              Discover Heritage
-            </button>
+            {!isMobile && (
+              <button
+                onClick={() => {
+                  const doc = document.getElementById('heritage-section');
+                  if (doc) doc.scrollIntoView({ behavior: 'smooth' });
+                }}
+                style={{
+                  padding: '1.1rem 2.8rem',
+                  fontSize: '1rem',
+                  color: 'white',
+                  border: '1.5px solid rgba(255, 255, 255, 0.4)',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  borderRadius: '100px',
+                  backdropFilter: 'blur(10px)',
+                  fontWeight: '600'
+                }}
+              >
+                Discover Heritage
+              </button>
+            )}
           </div>
         </motion.div>
-        
-        {/* Organic wavy decorative lines */}
+
         <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0, height: '80px',
+          position: 'absolute', bottom: 0, left: 0, right: 0,
+          height: isMobile ? '50px' : '80px',
           background: 'linear-gradient(to top, var(--background), transparent)', zIndex: 1
         }} />
       </section>
