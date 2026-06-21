@@ -181,7 +181,6 @@ const App = () => {
             >
               <Inventory
                 onAdd={() => openAdminModal(null)}
-                onEdit={(p) => openAdminModal(p)}
                 onDelete={deleteProduct}
                 onLogout={handleLogout}
                 onViewChange={handleViewChange}
