@@ -52,96 +52,99 @@ const Inventory = ({ onAdd, onDelete, onViewChange }) => {
     }
   };
 
+  const iconBtn = (onClick, icon, label, variant = 'ghost') => {
+    const styles = {
+      primary: { background: 'linear-gradient(135deg, var(--primary), #f59e0b)', color: 'white', border: 'none', shadow: '0 4px 14px rgba(194,65,12,0.3)' },
+      outline: { background: 'white', color: 'var(--primary)', border: '1.5px solid rgba(194,65,12,0.22)', shadow: 'none' },
+      ghost:   { background: '#f5f5f5', color: '#444', border: 'none', shadow: 'none' },
+    }[variant];
+    return (
+      <button onClick={onClick} title={label} style={{
+        display: 'flex', alignItems: 'center', gap: isMobile ? '0' : '0.45rem',
+        padding: isMobile ? '0.65rem' : '0.65rem 1.1rem',
+        borderRadius: '12px', cursor: 'pointer', fontWeight: '600',
+        fontSize: '0.84rem', transition: 'all 0.18s', whiteSpace: 'nowrap',
+        boxShadow: styles.shadow, background: styles.background,
+        color: styles.color, border: styles.border,
+      }}
+        onMouseEnter={e => { e.currentTarget.style.opacity = '0.85'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+        onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }}
+      >
+        {icon}
+        {!isMobile && <span>{label}</span>}
+      </button>
+    );
+  };
+
   return (
-    <div style={{ padding: '2rem 0' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
-            <h2 style={{ fontSize: '2.5rem', fontFamily: 'var(--font-heading)', color: 'var(--secondary)' }}>Live Inventory</h2>
-            <div style={{ 
-              background: 'rgba(34, 197, 94, 0.1)', 
-              color: 'var(--success)', 
-              padding: '0.4rem 0.8rem', 
-              borderRadius: '10px', 
-              fontSize: '0.75rem', 
-              fontWeight: 'bold',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.4rem'
-            }}>
-              <ShieldCheck size={14} /> Secured
-            </div>
-          </div>
-          <p style={{ color: 'var(--text-muted)' }}>Detailed view of your current collection and stock status.</p>
+    <div style={{ padding: isMobile ? '1rem 0' : '2rem 0' }}>
+
+      {/* ── Header ── */}
+      <div style={{ marginBottom: '1.75rem' }}>
+
+        {/* Title row */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.3rem', flexWrap: 'wrap' }}>
+          <h2 style={{ fontSize: isMobile ? '1.6rem' : '2.2rem', fontFamily: 'var(--font-heading)', color: 'var(--secondary)', margin: 0 }}>
+            Live Inventory
+          </h2>
+          <span style={{
+            display: 'flex', alignItems: 'center', gap: '0.35rem',
+            background: 'rgba(34,197,94,0.1)', color: '#16a34a',
+            padding: '0.3rem 0.75rem', borderRadius: '20px',
+            fontSize: '0.72rem', fontWeight: '700',
+          }}>
+            <ShieldCheck size={12} /> Secured
+          </span>
+          <span style={{
+            background: 'rgba(194,65,12,0.08)', color: 'var(--primary)',
+            padding: '0.3rem 0.75rem', borderRadius: '20px',
+            fontSize: '0.72rem', fontWeight: '700',
+          }}>
+            {filteredProducts.length} Products
+          </span>
         </div>
-        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
-          <button
-            onClick={() => onViewChange('settings')}
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>
+          Manage your collection — edit inline, update stock, add new items.
+        </p>
+      </div>
+
+      {/* ── Toolbar ── */}
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: '0.6rem',
+        flexWrap: 'wrap', marginBottom: '1.25rem',
+        background: 'white', borderRadius: '16px',
+        padding: '0.75rem 1rem',
+        boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+        border: '1px solid #f0f0f0',
+      }}>
+        {/* Search — grows */}
+        <div style={{ position: 'relative', flex: 1, minWidth: isMobile ? '100%' : '200px' }}>
+          <Search size={15} style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#bbb' }} />
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={searchTerm}
+            onChange={e => setSearchTerm(e.target.value)}
             style={{
-              display: 'flex', alignItems: 'center', gap: '0.5rem',
-              padding: '0.75rem 1.1rem', borderRadius: '12px',
-              border: '1.5px solid rgba(194,65,12,0.2)',
-              background: 'white', color: 'var(--primary)',
-              fontWeight: '600', fontSize: '0.88rem', cursor: 'pointer',
-              transition: 'all 0.2s',
+              width: '100%', padding: '0.6rem 0.9rem 0.6rem 2.4rem',
+              borderRadius: '10px', border: '1.5px solid #ececec',
+              outline: 'none', background: '#fafafa',
+              fontSize: '0.85rem', boxSizing: 'border-box',
+              transition: 'border-color 0.2s',
             }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'var(--primary)'; e.currentTarget.style.color = 'white'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'white'; e.currentTarget.style.color = 'var(--primary)'; }}
-          >
-            <Settings size={16} /> Store Settings
-          </button>
-          <div style={{ position: 'relative' }}>
-            <Search size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#999' }} />
-            <input 
-              type="text" 
-              placeholder="Search products..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                padding: '0.75rem 1.25rem 0.75rem 2.6rem',
-                borderRadius: '12px',
-                border: '1px solid #eee',
-                outline: 'none',
-                background: '#f9f9f9',
-                width: '230px',
-                fontSize: '0.9rem'
-              }}
-            />
-          </div>
-          <button 
-            onClick={() => onViewChange('orders')}
-            className="btn-secondary"
-            style={{ 
-              padding: '0.75rem 1.25rem', 
-              borderRadius: '12px', 
-              fontSize: '0.88rem'
-            }}
-          >
-            Order History
-          </button>
-          <button 
-            onClick={() => setIsCategoryModalOpen(true)}
-            className="btn-secondary"
-            style={{ 
-              padding: '0.75rem 1.25rem', 
-              borderRadius: '12px', 
-              fontSize: '0.88rem'
-            }}
-          >
-            Manage Categories
-          </button>
-          <button 
-            onClick={onAdd}
-            className="btn-primary"
-            style={{ 
-              padding: '0.75rem 1.25rem', 
-              borderRadius: '12px', 
-              fontSize: '0.88rem'
-            }}
-          >
-            <Plus size={18} /> Add New Art
-          </button>
+            onFocus={e => e.currentTarget.style.borderColor = 'var(--primary)'}
+            onBlur={e => e.currentTarget.style.borderColor = '#ececec'}
+          />
         </div>
+
+        {/* Divider */}
+        {!isMobile && <div style={{ width: '1px', height: '28px', background: '#ececec' }} />}
+
+        {/* Action buttons */}
+        {iconBtn(() => onViewChange('orders'),          <ExternalLink size={15} />, 'Orders',            'ghost')}
+        {iconBtn(() => setIsCategoryModalOpen(true),    <Package size={15} />,      'Categories',        'outline')}
+        {iconBtn(() => onViewChange('settings'),        <Settings size={15} />,     'Store Settings',    'outline')}
+        {iconBtn(onAdd,                                 <Plus size={15} />,         'Add Product',       'primary')}
       </div>
 
       <div style={{ background: 'white', borderRadius: '24px', overflowX: 'auto', WebkitOverflowScrolling: 'touch', boxShadow: '0 2px 16px rgba(0,0,0,0.05)' }}>
