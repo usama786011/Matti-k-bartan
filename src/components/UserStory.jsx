@@ -290,7 +290,7 @@ const UserStory = ({ onViewChange }) => {
                   style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', height: '100%' }}
                   onClick={() => setSelectedProduct(item)}
                 >
-                  <div style={{ position: 'relative', height: '280px', overflow: 'hidden', background: '#f5f5f5', flexShrink: 0 }}>
+                  <div style={{ position: 'relative', height: '165px', overflow: 'hidden', background: '#f5f5f5', flexShrink: 0 }}>
                     <img
                       src={item.image}
                       alt={item.name}
@@ -298,18 +298,18 @@ const UserStory = ({ onViewChange }) => {
                       className="product-image"
                     />
                   </div>
-                  <div style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', flexGrow: 1, justifyContent: 'space-between' }}>
-                    <div>
-                      <h3 style={{ fontSize: '1.15rem', marginBottom: '0.35rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.name}</h3>
+                  <div style={{ padding: '0.9rem', display: 'flex', flexDirection: 'column', flexGrow: 1, justifyContent: 'space-between' }}>
+                    <div style={{ marginBottom: '0.75rem' }}>
+                      <h3 style={{ fontSize: '0.92rem', marginBottom: '0.3rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.name}</h3>
                       {item.description && (
                         <p style={{
-                          color: 'var(--text-muted)', fontSize: '0.85rem', lineHeight: '1.5', marginBottom: '0.5rem',
+                          color: 'var(--text-muted)', fontSize: '0.78rem', lineHeight: '1.45', marginBottom: '0.45rem',
                           display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden'
                         }}>
                           {item.description}
                         </p>
                       )}
-                      <span style={{ fontSize: '1.1rem', fontWeight: 'bold', color: 'var(--primary)', display: 'block' }}>
+                      <span style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--primary)', display: 'block' }}>
                         Rs. {item.price.toLocaleString()}
                       </span>
                     </div>
@@ -318,18 +318,17 @@ const UserStory = ({ onViewChange }) => {
                         e.stopPropagation();
                         addToCart(item);
                       }}
-                      className="btn-primary"
                       style={{
-                        width: '100%',
-                        padding: '0.65rem 1rem',
-                        fontSize: '0.85rem',
-                        justifyContent: 'center',
-                        borderRadius: '12px',
-                        marginTop: '0.5rem',
-                        boxShadow: '0 4px 10px rgba(194, 65, 12, 0.15)'
+                        width: '100%', padding: '0.6rem',
+                        fontSize: '0.8rem', fontWeight: '700',
+                        justifyContent: 'center', borderRadius: '10px',
+                        background: 'linear-gradient(135deg, var(--primary), #e55a00)',
+                        color: 'white', border: 'none', cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', gap: '0.4rem',
+                        boxShadow: '0 3px 10px rgba(194,65,12,0.22)',
                       }}
                     >
-                      <ShoppingCart size={15} /> Add to Cart
+                      <ShoppingCart size={13} /> Add to Cart
                     </button>
                   </div>
                 </motion.div>
