@@ -15,13 +15,21 @@ import WapsiPage from './components/WapsiPage';
 import StoreSettings from './components/StoreSettings';
 import { useStore } from './context/StoreContext';
 
+const VIEW_TO_PATH = {
+  shop: '/', catalog: '/catalog', cart: '/cart',
+  privacy: '/privacy', terms: '/terms', returns: '/returns',
+  inventory: '/inventory', orders: '/orders', settings: '/settings',
+};
+const PATH_TO_VIEW = Object.fromEntries(Object.entries(VIEW_TO_PATH).map(([v, p]) => [p, v]));
+const pathToView = (path) => PATH_TO_VIEW[path] || PATH_TO_VIEW[path.replace(/\/$/, '')] || 'shop';
+
 const App = () => {
-  const [currentView, setCurrentView] = useState('shop');
+  const [currentView, setCurrentView] = useState(() => pathToView(window.location.pathname));
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [loginCredentials, setLoginCredentials] = useState({ user: '', pass: '' });
   const [loginError, setLoginError] = useState('');
-  const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false); // For the modal in Inventory view
+  const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [activeCategory, setActiveCategory] = useState(null);
 
@@ -30,7 +38,20 @@ const App = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    const path = VIEW_TO_PATH[currentView] || '/';
+    if (window.location.pathname !== path) {
+      window.history.pushState({ view: currentView }, '', path);
+    }
   }, [currentView]);
+
+  useEffect(() => {
+    const onPop = (e) => {
+      const view = pathToView(window.location.pathname);
+      setCurrentView(view);
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
 
   const handleViewChange = (view, category = null) => {
     if ((view === 'admin' || view === 'inventory' || view === 'orders' || view === 'settings') && !isAdminLoggedIn) {
