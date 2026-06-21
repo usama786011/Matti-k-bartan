@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { FileText, ShoppingBag, Truck, RefreshCw, CreditCard, AlertCircle, Scale, Mail, Phone, MapPin, ArrowLeft } from 'lucide-react';
+import { useStore } from '../context/StoreContext';
 
 const Section = ({ icon: Icon, title, children, delay = 0 }) => (
   <motion.div
@@ -39,6 +40,7 @@ const Bullet = ({ children }) => (
 );
 
 const ShopTerms = ({ onBack }) => {
+  const { settings } = useStore();
   return (
     <div style={{ maxWidth: '820px', margin: '0 auto', padding: '0.75rem 1rem 4rem' }}>
 
@@ -86,7 +88,7 @@ const ShopTerms = ({ onBack }) => {
           Terms of Service
         </h1>
         <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem', margin: '0 0 1rem' }}>
-          Riwaayat Pots — Multan Road, Lahore, Pakistan
+          {settings.name} — {settings.address}
         </p>
         <span style={{
           display: 'inline-block',
@@ -211,9 +213,9 @@ const ShopTerms = ({ onBack }) => {
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
             {[
-              { icon: MapPin, text: 'Multan Road, Lahore, Pakistan' },
-              { icon: Mail,   text: 'support@mattiart.pk' },
-              { icon: Phone,  text: '+92 42 1234 5678' },
+              { icon: MapPin, text: settings.address },
+              { icon: Mail,   text: settings.email },
+              { icon: Phone,  text: settings.phone },
             ].map(({ icon: Icon, text }) => (
               <div key={text} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <Icon size={16} color="var(--primary)" style={{ flexShrink: 0 }} />

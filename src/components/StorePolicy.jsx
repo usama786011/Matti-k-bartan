@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Eye, Lock, Database, Bell, Trash2, Mail, Phone, MapPin, ArrowLeft } from 'lucide-react';
+import { useStore } from '../context/StoreContext';
 
 const Section = ({ icon: Icon, title, children, delay = 0 }) => (
   <motion.div
@@ -39,6 +40,7 @@ const Bullet = ({ children }) => (
 );
 
 const PrivacyPolicy = ({ onBack }) => {
+  const { settings } = useStore();
   return (
     <div style={{ maxWidth: '820px', margin: '0 auto', padding: '0.75rem 1rem 4rem' }}>
 
@@ -204,9 +206,9 @@ const PrivacyPolicy = ({ onBack }) => {
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
             {[
-              { icon: MapPin, text: 'Multan Road, Lahore, Pakistan' },
-              { icon: Mail,   text: 'support@mattiart.pk' },
-              { icon: Phone,  text: '+92 42 1234 5678' },
+              { icon: MapPin, text: settings.address },
+              { icon: Mail,   text: settings.email },
+              { icon: Phone,  text: settings.phone },
             ].map(({ icon: Icon, text }) => (
               <div key={text} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <Icon size={16} color="var(--primary)" style={{ flexShrink: 0 }} />

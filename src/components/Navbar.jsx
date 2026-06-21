@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useProducts } from '../context/ProductContext';
+import { useStore } from '../context/StoreContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const useIsMobile = () => {
@@ -20,6 +21,7 @@ const useIsMobile = () => {
 const Navbar = ({ onViewChange, currentView, isAdminLoggedIn, onLogout }) => {
   const { cartItems } = useCart();
   const { products, categories } = useProducts();
+  const { settings } = useStore();
   const isMobile = useIsMobile();
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -101,7 +103,7 @@ const Navbar = ({ onViewChange, currentView, isAdminLoggedIn, onLogout }) => {
               fontFamily: 'var(--font-heading)', fontWeight: '800',
               fontSize: '1.45rem', color: 'var(--secondary)', letterSpacing: '-0.5px',
             }}>
-              Riwaayat Pots
+              {settings.name}
             </span>
           </div>
 

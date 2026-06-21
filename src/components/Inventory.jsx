@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useProducts } from '../context/ProductContext';
-import { Package, Search, Edit3, Trash2, Plus, ExternalLink, ShieldCheck, AlertCircle, X } from 'lucide-react';
+import { Package, Search, Edit3, Trash2, Plus, ExternalLink, ShieldCheck, AlertCircle, X, Settings } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Inventory = ({ onEdit, onAdd, onDelete, onViewChange }) => {
@@ -46,6 +46,21 @@ const Inventory = ({ onEdit, onAdd, onDelete, onViewChange }) => {
           <p style={{ color: 'var(--text-muted)' }}>Detailed view of your current collection and stock status.</p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <button
+            onClick={() => onViewChange('settings')}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '0.5rem',
+              padding: '0.75rem 1.1rem', borderRadius: '12px',
+              border: '1.5px solid rgba(194,65,12,0.2)',
+              background: 'white', color: 'var(--primary)',
+              fontWeight: '600', fontSize: '0.88rem', cursor: 'pointer',
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'var(--primary)'; e.currentTarget.style.color = 'white'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'white'; e.currentTarget.style.color = 'var(--primary)'; }}
+          >
+            <Settings size={16} /> Store Settings
+          </button>
           <div style={{ position: 'relative' }}>
             <Search size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: '#999' }} />
             <input 

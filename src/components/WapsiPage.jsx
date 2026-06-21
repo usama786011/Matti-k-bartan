@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { PackageX, CheckCircle, XCircle, Clock, Camera, PhoneCall, Truck, AlertTriangle, Mail, Phone, MapPin, ArrowLeft } from 'lucide-react';
+import { useStore } from '../context/StoreContext';
 
 const Section = ({ icon: Icon, title, children, delay = 0 }) => (
   <motion.div
@@ -44,6 +45,7 @@ const Bullet = ({ children, type = 'normal' }) => {
 };
 
 const WapsiPage = ({ onBack }) => {
+  const { settings } = useStore();
   return (
     <div style={{ maxWidth: '820px', margin: '0 auto', padding: '0.75rem 1rem 4rem' }}>
 
@@ -91,7 +93,7 @@ const WapsiPage = ({ onBack }) => {
           Return Policy
         </h1>
         <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem', margin: '0 0 1rem' }}>
-          Riwaayat Pots — Multan Road, Lahore, Pakistan
+          {settings.name} — {settings.address}
         </p>
         <span style={{
           display: 'inline-block',
@@ -177,7 +179,7 @@ const WapsiPage = ({ onBack }) => {
         <Section icon={Camera} title="Wapsi Ka Tareeqa — Step by Step" delay={0.30}>
           {[
             { step: '01', title: 'Delivery ke waqt check karein', desc: 'Item courier ke saamne hi kholein — baad mein masla hone par courier ki zimmedari bhi clear rahegi.' },
-            { step: '02', title: '24 ghante mein photo bheijein', desc: 'Maslay ki clear photos lein (toot, crack, wrong item) aur hamare WhatsApp par bheijein: +92 42 1234 5678' },
+            { step: '02', title: '24 ghante mein photo bheijein', desc: `Maslay ki clear photos lein (toot, crack, wrong item) aur hamare WhatsApp par bheijein: ${settings.whatsapp}` },
             { step: '03', title: 'Hamara jawab', desc: 'Hum 12–24 ghante mein review karenge aur batayenge — replace karein ge ya courier bhej dein ge pickup ke liye.' },
             { step: '04', title: 'Replacement dispatch', desc: 'Hamare qasoor hone par replacement 2–3 working days mein bhej di jaayegi — delivery charges hamare.' },
           ].map(({ step, title, desc }) => (
@@ -261,9 +263,9 @@ const WapsiPage = ({ onBack }) => {
           </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
             {[
-              { icon: MapPin, text: 'Multan Road, Lahore, Pakistan' },
-              { icon: Mail,   text: 'support@mattiart.pk' },
-              { icon: Phone,  text: '+92 42 1234 5678' },
+              { icon: MapPin, text: settings.address },
+              { icon: Mail,   text: settings.email },
+              { icon: Phone,  text: settings.phone },
             ].map(({ icon: Icon, text }) => (
               <div key={text} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <Icon size={16} color="var(--primary)" style={{ flexShrink: 0 }} />
