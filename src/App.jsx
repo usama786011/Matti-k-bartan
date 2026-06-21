@@ -9,6 +9,9 @@ import OrderHistory from './components/OrderHistory';
 import { useProducts } from './context/ProductContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Lock, X, LogIn, Store, Palette, LayoutDashboard, ScrollText } from 'lucide-react';
+import PrivacyPolicy from './components/StorePolicy';
+import ShopTerms from './components/ShopTerms';
+import WapsiPage from './components/WapsiPage';
 
 const App = () => {
   const [currentView, setCurrentView] = useState('shop');
@@ -315,7 +318,43 @@ const App = () => {
             </motion.div>
           </div>
         )}
-      </AnimatePresence>
+
+          {currentView === 'privacy' && (
+            <motion.div
+              key="privacy"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <PrivacyPolicy onBack={() => handleViewChange('shop')} />
+            </motion.div>
+          )}
+
+          {currentView === 'terms' && (
+            <motion.div
+              key="terms"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <ShopTerms onBack={() => handleViewChange('shop')} />
+            </motion.div>
+          )}
+
+          {currentView === 'returns' && (
+            <motion.div
+              key="returns"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <WapsiPage onBack={() => handleViewChange('shop')} />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
       <footer style={{
         background: 'linear-gradient(135deg, #1a0f00 0%, #2d1800 50%, #1a0f00 100%)',
@@ -339,7 +378,7 @@ const App = () => {
         <div className="container" style={{ paddingTop: '5rem', paddingBottom: '4rem' }}>
           <div style={{
             display: 'grid',
-            gridTemplateColumns: '1.6fr 1fr 1fr 1fr',
+            gridTemplateColumns: '1.6fr 1fr 1fr',
             gap: '3rem',
             marginBottom: '4rem'
           }} className="footer-grid">
@@ -362,29 +401,40 @@ const App = () => {
               {/* Social Icons */}
               <div style={{ display: 'flex', gap: '0.75rem' }}>
                 {[
-                  { icon: '📘', label: 'Facebook', color: '#1877f2' },
-                  { icon: '📸', label: 'Instagram', color: '#e1306c' },
-                  { icon: '🐦', label: 'Twitter', color: '#1da1f2' },
-                  { icon: '▶️', label: 'YouTube', color: '#ff0000' },
-                ].map(({ icon, label, color }) => (
+                  {
+                    label: 'WhatsApp', color: '#25d366',
+                    svg: <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.554 4.124 1.526 5.855L.057 23.428a.75.75 0 0 0 .918.943l5.747-1.505A11.95 11.95 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75a9.715 9.715 0 0 1-4.946-1.349l-.355-.21-3.668.961.977-3.565-.23-.366A9.712 9.712 0 0 1 2.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/></svg>
+                  },
+                  {
+                    label: 'Facebook', color: '#1877f2',
+                    svg: <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+                  },
+                  {
+                    label: 'Instagram', color: '#e1306c',
+                    svg: <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+                  },
+                  {
+                    label: 'YouTube', color: '#ff0000',
+                    svg: <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+                  },
+                ].map(({ label, color, svg }) => (
                   <button
                     key={label}
                     title={label}
                     style={{
                       width: '40px', height: '40px',
                       borderRadius: '10px',
-                      background: 'rgba(255,255,255,0.07)',
-                      border: '1px solid rgba(255,255,255,0.1)',
+                      background: color,
+                      border: `1px solid ${color}`,
                       color: '#fff',
-                      fontSize: '1rem',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       cursor: 'pointer',
                       transition: 'all 0.2s'
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.background = color; e.currentTarget.style.borderColor = color; e.currentTarget.style.transform = 'translateY(-3px)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.07)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.opacity = '0.85'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.opacity = '1'; }}
                   >
-                    {icon}
+                    {svg}
                   </button>
                 ))}
               </div>
@@ -443,56 +493,6 @@ const App = () => {
               </ul>
             </div>
 
-            {/* Newsletter */}
-            <div>
-              <h4 style={{ color: '#fff', fontSize: '0.85rem', fontWeight: '700', letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '1.75rem', paddingBottom: '0.75rem', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-                Newsletter
-              </h4>
-              <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.88rem', lineHeight: '1.65', marginBottom: '1.25rem' }}>
-                Get new arrivals and exclusive offers straight to your inbox.
-              </p>
-              <form onSubmit={e => e.preventDefault()} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                <input
-                  type="email"
-                  placeholder="Your email address"
-                  style={{
-                    padding: '0.85rem 1.1rem',
-                    borderRadius: '12px',
-                    border: '1px solid rgba(255,255,255,0.12)',
-                    background: 'rgba(255,255,255,0.07)',
-                    color: '#fff',
-                    fontSize: '0.88rem',
-                    outline: 'none',
-                    width: '100%',
-                    boxSizing: 'border-box'
-                  }}
-                  onFocus={e => e.currentTarget.style.borderColor = 'var(--primary)'}
-                  onBlur={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'}
-                />
-                <button
-                  type="submit"
-                  style={{
-                    background: 'linear-gradient(135deg, var(--primary), #f59e0b)',
-                    color: 'white',
-                    padding: '0.85rem 1.25rem',
-                    borderRadius: '12px',
-                    fontWeight: '700',
-                    fontSize: '0.88rem',
-                    border: 'none',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                    boxShadow: '0 4px 20px rgba(194,65,12,0.35)'
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                  onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
-                >
-                  Subscribe →
-                </button>
-              </form>
-              <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.75rem', marginTop: '0.75rem' }}>
-                🔒 No spam. Unsubscribe anytime.
-              </p>
-            </div>
           </div>
 
           {/* Divider */}
@@ -504,11 +504,18 @@ const App = () => {
               © 2026 <span style={{ color: 'var(--primary)', fontWeight: '600' }}>Riwaayat Pots</span>. Handcrafted with ❤️ in Pakistan. All rights reserved.
             </p>
             <div style={{ display: 'flex', gap: '1.5rem' }}>
-              {['Privacy Policy', 'Terms of Service', 'Return Policy'].map(item => (
-                <span key={item} style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.8rem', cursor: 'pointer', transition: 'color 0.2s' }}
-                  onMouseEnter={e => e.currentTarget.style.color = 'rgba(255,255,255,0.7)'}
+              {[
+                { label: 'Privacy Policy', view: 'privacy' },
+                { label: 'Terms of Service', view: 'terms' },
+                { label: 'Return Policy', view: 'returns' },
+              ].map(({ label, view }) => (
+                <span
+                  key={label}
+                  onClick={() => view && handleViewChange(view)}
+                  style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.8rem', cursor: view ? 'pointer' : 'default', transition: 'color 0.2s' }}
+                  onMouseEnter={e => e.currentTarget.style.color = view ? 'var(--primary)' : 'rgba(255,255,255,0.3)'}
                   onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.3)'}
-                >{item}</span>
+                >{label}</span>
               ))}
             </div>
           </div>
