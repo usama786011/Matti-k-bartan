@@ -123,7 +123,7 @@ const App = () => {
                   >
                     All Items
                   </button>
-                  {categories && categories.map(cat => (
+                  {categories && categories.filter(cat => products.some(p => p.category === cat)).map(cat => (
                     <button
                       key={cat}
                       onClick={() => setActiveCategory(cat)}
