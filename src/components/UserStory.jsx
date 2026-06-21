@@ -304,7 +304,7 @@ const UserStory = ({ onViewChange }) => {
                       {item.description && (
                         <p style={{
                           color: 'var(--text-muted)', fontSize: '0.85rem', lineHeight: '1.5', marginBottom: '0.5rem',
-                          display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'
+                          display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden'
                         }}>
                           {item.description}
                         </p>
