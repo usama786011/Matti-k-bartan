@@ -89,11 +89,13 @@ const Navbar = ({ onViewChange, currentView, isAdminLoggedIn, onLogout }) => {
             style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', cursor: 'pointer' }}
           >
             <div style={{
-              background: 'linear-gradient(135deg, var(--primary), #e55a00)',
-              padding: '7px', borderRadius: '11px', color: 'white',
-              display: 'flex', boxShadow: '0 4px 12px rgba(194,65,12,0.25)',
+              width: '38px', height: '38px',
+              background: 'linear-gradient(135deg, var(--primary), #f59e0b)',
+              borderRadius: '11px', color: 'white',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: '1.3rem', boxShadow: '0 4px 12px rgba(194,65,12,0.25)',
             }}>
-              <Palette size={18} />
+              🏺
             </div>
             <span style={{
               fontFamily: 'var(--font-heading)', fontWeight: '800',
