@@ -8,6 +8,7 @@ import {
 import { useProducts } from '../context/ProductContext';
 import { useCart } from '../context/CartContext';
 import ProductDetailModal from './ProductDetailModal';
+import AllReviewsModal from './AllReviewsModal';
 
 const UserStory = ({ onViewChange }) => {
   const { products, categories: dynamicCategories } = useProducts();
@@ -80,7 +81,7 @@ const UserStory = ({ onViewChange }) => {
   ];
 
   return (
-    <div style={{ paddingBottom: '3rem' }}>
+    <div>
       
       {/* 1. HERO BANNER */}
       <section style={{
@@ -396,7 +397,7 @@ const UserStory = ({ onViewChange }) => {
       </section>
 
       {/* 11. CUSTOMER REVIEWS */}
-      <section style={{ marginBottom: '8rem' }}>
+      <section style={{ marginBottom: '2rem' }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
           <span style={{ color: 'var(--primary)', fontWeight: '700', fontSize: '0.82rem', letterSpacing: '3px', textTransform: 'uppercase' }}>Customer Stories</span>
@@ -431,7 +432,7 @@ const UserStory = ({ onViewChange }) => {
               <>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   <AnimatePresence>
-                    {(showAllReviews ? [...reviews].reverse() : [...reviews].reverse().slice(0, 5)).map((r) => (
+                    {[...reviews].reverse().slice(0, 5).map((r) => (
                       <motion.div
                         key={r.id}
                         initial={{ opacity: 0, y: 16 }}
@@ -484,7 +485,7 @@ const UserStory = ({ onViewChange }) => {
 
                 {reviews.length > 5 && (
                   <button
-                    onClick={() => setShowAllReviews(p => !p)}
+                    onClick={() => setShowAllReviews(true)}
                     style={{
                       width: '100%', padding: '0.75rem',
                       borderRadius: '14px', border: '1.5px solid rgba(194,65,12,0.15)',
@@ -495,7 +496,7 @@ const UserStory = ({ onViewChange }) => {
                     onMouseEnter={e => e.currentTarget.style.background = 'var(--primary-light)'}
                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                   >
-                    {showAllReviews ? '↑ Show Less' : `Read All ${reviews.length} Reviews ↓`}
+                    Read All {reviews.length} Reviews ↓
                   </button>
                 )}
               </>
@@ -727,6 +728,13 @@ const UserStory = ({ onViewChange }) => {
         <ProductDetailModal
           product={selectedProduct}
           onClose={() => setSelectedProduct(null)}
+        />
+      )}
+
+      {showAllReviews && (
+        <AllReviewsModal
+          reviews={reviews}
+          onClose={() => setShowAllReviews(false)}
         />
       )}
     </div>

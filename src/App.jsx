@@ -320,7 +320,7 @@ const App = () => {
       <footer style={{
         background: 'linear-gradient(135deg, #1a0f00 0%, #2d1800 50%, #1a0f00 100%)',
         color: '#fff',
-        marginTop: '5rem',
+        marginTop: '0',
         position: 'relative',
         overflow: 'hidden'
       }}>
