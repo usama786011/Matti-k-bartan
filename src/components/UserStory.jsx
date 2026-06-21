@@ -126,7 +126,10 @@ const UserStory = ({ onViewChange }) => {
             marginBottom: isMobile ? '1rem' : '1.75rem',
             maxWidth: isMobile ? '100%' : '950px',
             textShadow: '0 4px 15px rgba(0,0,0,0.3)',
-            fontWeight: '300'
+            fontWeight: '300',
+            textAlign: 'center',
+            margin: '0 auto',
+            marginBottom: isMobile ? '1rem' : '1.75rem',
           }}>
             Whispers of Earth,{' '}
             <span style={{ fontStyle: 'italic', fontWeight: '500', color: 'var(--primary-light)' }}>
