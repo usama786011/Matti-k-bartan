@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useProducts } from '../context/ProductContext';
-import { Package, Search, Edit3, Trash2, Plus, ExternalLink, ShieldCheck, AlertCircle, X, Settings, Check } from 'lucide-react';
+import { Package, Search, Edit3, Trash2, Plus, ExternalLink, ShieldCheck, AlertCircle, X, Settings, Check, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Inventory = ({ onAdd, onDelete, onViewChange }) => {
@@ -12,14 +12,15 @@ const Inventory = ({ onAdd, onDelete, onViewChange }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({});
+  const reviewCount = (() => { try { return JSON.parse(localStorage.getItem('rp_reviews') || '[]').length; } catch { return 0; } })();
 
   const startEdit = (product) => {
     setEditingId(product.id);
-    setEditForm({ name: product.name, category: product.category, price: product.price, quantity: product.quantity ?? 0, image: product.image });
+    setEditForm({ name: product.name, category: product.category, price: product.price, quantity: product.quantity ?? 0, image: product.image, description: product.description ?? '' });
   };
 
   const saveEdit = (product) => {
-    updateProduct({ ...product, name: editForm.name, category: editForm.category, price: Number(editForm.price), quantity: Number(editForm.quantity), image: editForm.image });
+    updateProduct({ ...product, name: editForm.name, category: editForm.category, price: Number(editForm.price), quantity: Number(editForm.quantity), image: editForm.image, description: editForm.description });
     setEditingId(null);
   };
 
@@ -141,24 +142,48 @@ const Inventory = ({ onAdd, onDelete, onViewChange }) => {
         {!isMobile && <div style={{ width: '1px', height: '28px', background: '#ececec' }} />}
 
         {/* Action buttons */}
-        {iconBtn(() => onViewChange('orders'),          <ExternalLink size={15} />, 'Orders',            'ghost')}
-        {iconBtn(() => setIsCategoryModalOpen(true),    <Package size={15} />,      'Categories',        'outline')}
-        {iconBtn(() => onViewChange('settings'),        <Settings size={15} />,     'Store Settings',    'outline')}
-        {iconBtn(onAdd,                                 <Plus size={15} />,         'Add Product',       'primary')}
+        {iconBtn(() => onViewChange('orders'),          <ExternalLink size={15} />,   'Orders',          'ghost')}
+        <button onClick={() => onViewChange('reviews')} title="Reviews" style={{
+          display: 'flex', alignItems: 'center', gap: isMobile ? '0' : '0.45rem',
+          padding: isMobile ? '0.65rem' : '0.65rem 1.1rem',
+          borderRadius: '12px', cursor: 'pointer', fontWeight: '600',
+          fontSize: '0.84rem', background: '#f5f5f5', color: '#444',
+          border: 'none', whiteSpace: 'nowrap', position: 'relative',
+          transition: 'all 0.18s',
+        }}
+          onMouseEnter={e => { e.currentTarget.style.opacity = '0.85'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+          onMouseLeave={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.transform = 'translateY(0)'; }}
+        >
+          <MessageSquare size={15} />
+          {!isMobile && <span>Reviews</span>}
+          {reviewCount > 0 && (
+            <span style={{
+              position: 'absolute', top: '-6px', right: '-6px',
+              background: 'var(--primary)', color: 'white',
+              borderRadius: '50%', width: '18px', height: '18px',
+              fontSize: '0.65rem', fontWeight: '800',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              lineHeight: 1,
+            }}>{reviewCount > 99 ? '99+' : reviewCount}</span>
+          )}
+        </button>
+        {iconBtn(() => setIsCategoryModalOpen(true),    <Package size={15} />,        'Categories',      'outline')}
+        {iconBtn(() => onViewChange('settings'),        <Settings size={15} />,       'Store Settings',  'outline')}
+        {iconBtn(onAdd,                                 <Plus size={15} />,           'Add Product',     'primary')}
       </div>
 
       <div style={{ background: 'white', borderRadius: '24px', overflowX: 'auto', WebkitOverflowScrolling: 'touch', boxShadow: '0 2px 16px rgba(0,0,0,0.05)' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '700px' }}>
           <thead>
             <tr style={{ borderBottom: '2px solid #f3f3f3' }}>
-              {['Product', 'Category', 'Price', 'Quantity', 'Status', 'Actions'].map((col, i) => (
+              {['Product', 'Category', 'Description', 'Price', 'Quantity', 'Status', 'Actions'].map((col, i) => (
                 <th key={col} style={{
                   padding: isMobile ? '0.9rem 0.75rem' : '1.25rem 1.5rem',
                   color: 'var(--text-muted)', fontWeight: '700',
                   fontSize: isMobile ? '0.75rem' : '0.85rem',
                   textTransform: 'uppercase', letterSpacing: '0.5px',
                   whiteSpace: 'nowrap',
-                  textAlign: i === 5 ? 'right' : 'left',
+                  textAlign: i === 6 ? 'right' : 'left',
                   background: '#fafaf9',
                 }}>
                   {col}
@@ -241,6 +266,28 @@ const Inventory = ({ onAdd, onDelete, onViewChange }) => {
                     )}
                   </td>
 
+                  {/* Description */}
+                  <td style={{ padding: p, maxWidth: '220px' }}>
+                    {isEditing ? (
+                      <textarea
+                        rows={2}
+                        style={{ ...inputStyle, minWidth: '160px', resize: 'vertical', fontFamily: 'inherit', lineHeight: '1.4' }}
+                        value={editForm.description}
+                        onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))}
+                        placeholder="Product description..."
+                      />
+                    ) : (
+                      <span style={{
+                        fontSize: isMobile ? '0.78rem' : '0.83rem',
+                        color: 'var(--text-muted)', lineHeight: '1.45',
+                        display: '-webkit-box', WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                      }}>
+                        {product.description || <span style={{ fontStyle: 'italic', opacity: 0.5 }}>—</span>}
+                      </span>
+                    )}
+                  </td>
+
                   {/* Price */}
                   <td style={{ padding: p, whiteSpace: 'nowrap' }}>
                     {isEditing ? (
@@ -311,7 +358,7 @@ const Inventory = ({ onAdd, onDelete, onViewChange }) => {
               );
             }) : (
               <tr>
-                <td colSpan="6" style={{ padding: '3rem', textAlign: 'center', color: '#999', fontSize: '0.9rem' }}>
+                <td colSpan="7" style={{ padding: '3rem', textAlign: 'center', color: '#999', fontSize: '0.9rem' }}>
                   No products found matching your search.
                 </td>
               </tr>

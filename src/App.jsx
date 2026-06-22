@@ -13,12 +13,13 @@ import PrivacyPolicy from './components/StorePolicy';
 import ShopTerms from './components/ShopTerms';
 import WapsiPage from './components/WapsiPage';
 import StoreSettings from './components/StoreSettings';
+import AdminReviews from './components/AdminReviews';
 import { useStore } from './context/StoreContext';
 
 const VIEW_TO_PATH = {
   shop: '/', catalog: '/catalog', cart: '/cart',
   privacy: '/privacy', terms: '/terms', returns: '/returns',
-  inventory: '/inventory', orders: '/orders', settings: '/settings',
+  inventory: '/inventory', orders: '/orders', settings: '/settings', reviews: '/reviews',
 };
 const PATH_TO_VIEW = Object.fromEntries(Object.entries(VIEW_TO_PATH).map(([v, p]) => [p, v]));
 const pathToView = (path) => PATH_TO_VIEW[path] || PATH_TO_VIEW[path.replace(/\/$/, '')] || 'shop';
@@ -54,7 +55,7 @@ const App = () => {
   }, []);
 
   const handleViewChange = (view, category = null) => {
-    if ((view === 'admin' || view === 'inventory' || view === 'orders' || view === 'settings') && !isAdminLoggedIn) {
+    if ((view === 'admin' || view === 'inventory' || view === 'orders' || view === 'settings' || view === 'reviews') && !isAdminLoggedIn) {
       setIsLoginModalOpen(true);
     } else {
       if (view === 'catalog') {
@@ -389,9 +390,21 @@ const App = () => {
               <StoreSettings onBack={() => handleViewChange('inventory')} />
             </motion.div>
           )}
+
+          {currentView === 'reviews' && isAdminLoggedIn && (
+            <motion.div
+              key="reviews"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <AdminReviews onBack={() => handleViewChange('inventory')} />
+            </motion.div>
+          )}
         </AnimatePresence>
 
-      {!['inventory', 'orders', 'settings', 'admin'].includes(currentView) && <footer style={{
+      {!['inventory', 'orders', 'settings', 'admin', 'reviews'].includes(currentView) && <footer style={{
         background: 'linear-gradient(135deg, #1a0f00 0%, #2d1800 50%, #1a0f00 100%)',
         color: '#fff',
         marginTop: '0',

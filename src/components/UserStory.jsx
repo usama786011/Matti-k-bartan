@@ -401,106 +401,254 @@ const UserStory = ({ onViewChange }) => {
 
       {/* 11. CUSTOMER REVIEWS */}
       <section style={{ marginBottom: '2rem' }}>
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-          <span style={{ color: 'var(--primary)', fontWeight: '700', fontSize: '0.82rem', letterSpacing: '3px', textTransform: 'uppercase' }}>Customer Stories</span>
-          <h2 style={{ fontSize: isMobile ? '2rem' : '3rem', marginTop: '0.5rem' }}>Reviews & Experiences</h2>
+
+        {/* ── Section Header ── */}
+        <div style={{ textAlign: 'center', marginBottom: isMobile ? '2.5rem' : '3.5rem' }}>
+          <span style={{
+            display: 'inline-block',
+            background: 'rgba(194,65,12,0.08)', color: 'var(--primary)',
+            padding: '0.35rem 1rem', borderRadius: '20px',
+            fontSize: '0.75rem', fontWeight: '700', letterSpacing: '2px',
+            textTransform: 'uppercase', marginBottom: '1rem',
+          }}>
+            ⭐ Customer Stories
+          </span>
+          <h2 style={{ fontSize: isMobile ? '1.9rem' : '3rem', marginTop: '0', marginBottom: '0.5rem' }}>
+            What Our Customers Say
+          </h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: isMobile ? '0.88rem' : '1rem', maxWidth: '500px', margin: '0 auto' }}>
+            Real experiences from people who brought our clay crafts home.
+          </p>
         </div>
 
+        {/* ── Rating Stats Bar (shown only when reviews exist) ── */}
+        {reviews.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            style={{
+              display: 'flex', alignItems: 'center', gap: isMobile ? '1.25rem' : '2.5rem',
+              background: 'linear-gradient(135deg, #2d1800 0%, #1a0f00 100%)',
+              borderRadius: '20px', padding: isMobile ? '1.25rem 1.5rem' : '1.75rem 2.5rem',
+              marginBottom: isMobile ? '2rem' : '3rem',
+              flexWrap: 'wrap',
+            }}
+          >
+            {/* Big avg number */}
+            <div style={{ textAlign: 'center', flexShrink: 0 }}>
+              <div style={{
+                fontSize: isMobile ? '3rem' : '4rem', fontWeight: '800',
+                color: '#f59e0b', lineHeight: 1, fontFamily: 'var(--font-heading)',
+              }}>
+                {(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)}
+              </div>
+              <div style={{ display: 'flex', gap: '3px', justifyContent: 'center', marginTop: '0.4rem' }}>
+                {[1,2,3,4,5].map(n => (
+                  <Star key={n} size={isMobile ? 13 : 16}
+                    fill={n <= Math.round(reviews.reduce((s,r) => s+r.rating,0)/reviews.length) ? '#f59e0b' : '#4b3010'}
+                    color={n <= Math.round(reviews.reduce((s,r) => s+r.rating,0)/reviews.length) ? '#f59e0b' : '#4b3010'} />
+                ))}
+              </div>
+              <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.72rem', marginTop: '0.3rem' }}>
+                {reviews.length} reviews
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div style={{ width: '1px', height: '70px', background: 'rgba(255,255,255,0.1)', flexShrink: 0, display: isMobile ? 'none' : 'block' }} />
+
+            {/* Star breakdown */}
+            <div style={{ flex: 1, minWidth: isMobile ? '100%' : '200px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {[5,4,3,2,1].map(n => {
+                const count = reviews.filter(r => r.rating === n).length;
+                const pct = reviews.length ? (count / reviews.length) * 100 : 0;
+                return (
+                  <div key={n} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.72rem', width: '8px', textAlign: 'right', flexShrink: 0 }}>{n}</span>
+                    <Star size={10} fill="#f59e0b" color="#f59e0b" style={{ flexShrink: 0 }} />
+                    <div style={{ flex: 1, height: '6px', background: 'rgba(255,255,255,0.08)', borderRadius: '10px', overflow: 'hidden' }}>
+                      <motion.div
+                        initial={{ width: 0 }}
+                        whileInView={{ width: `${pct}%` }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.7, ease: 'easeOut', delay: (5 - n) * 0.07 }}
+                        style={{ height: '100%', background: 'linear-gradient(90deg, #f59e0b, #d97706)', borderRadius: '10px' }}
+                      />
+                    </div>
+                    <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.7rem', width: '16px', flexShrink: 0 }}>{count}</span>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Total badge */}
+            <div style={{ textAlign: 'center', flexShrink: 0, display: isMobile ? 'none' : 'block' }}>
+              <div style={{
+                background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.25)',
+                borderRadius: '14px', padding: '0.75rem 1.25rem',
+              }}>
+                <div style={{ fontSize: '1.6rem', fontWeight: '800', color: '#f59e0b', lineHeight: 1 }}>{reviews.length}</div>
+                <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.72rem', marginTop: '0.2rem' }}>Total Reviews</div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* ── Main Grid: Reviews + Form ── */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
-          gap: '2.5rem',
+          gap: isMobile ? '1.5rem' : '2.5rem',
           alignItems: 'start',
         }}>
 
-          {/* ── LEFT: Latest Reviews ── */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', order: isMobile ? 2 : 1 }}>
-            <h3 style={{ fontSize: '1.1rem', color: 'var(--secondary)', marginBottom: '0.25rem', fontWeight: '700' }}>
-              Latest Reviews <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: '400' }}>({reviews.length})</span>
-            </h3>
+          {/* ── LEFT: Review Cards ── */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', order: isMobile ? 2 : 1 }}>
 
             {reviews.length === 0 ? (
               <div style={{
-                textAlign: 'center', padding: '3rem 1rem',
-                background: '#fafafa', borderRadius: '18px',
-                border: '1.5px dashed #eee',
+                textAlign: 'center', padding: '4rem 1.5rem',
+                background: 'white', borderRadius: '24px',
+                border: '2px dashed rgba(194,65,12,0.12)',
               }}>
-                <Star size={32} color="#e5e7eb" strokeWidth={1.5} />
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', marginTop: '0.75rem' }}>
-                  Koi review nahi abhi tak — pehle aap likhein!
+                <div style={{
+                  width: '64px', height: '64px', borderRadius: '20px',
+                  background: 'rgba(194,65,12,0.06)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  margin: '0 auto 1rem',
+                }}>
+                  <Star size={28} color="var(--primary)" strokeWidth={1.5} />
+                </div>
+                <h4 style={{ fontSize: '1rem', color: 'var(--secondary)', marginBottom: '0.4rem' }}>
+                  Abhi tak koi review nahi
+                </h4>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                  Pehli review likhein aur doosron ki rahnumai karein!
                 </p>
               </div>
             ) : (
               <>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  <AnimatePresence>
-                    {[...reviews].reverse().slice(0, 5).map((r) => (
-                      <motion.div
-                        key={r.id}
-                        initial={{ opacity: 0, y: 16 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.35 }}
-                        style={{
-                          background: 'white', borderRadius: '18px',
-                          padding: '1.1rem 1.25rem',
-                          border: '1px solid rgba(194,65,12,0.07)',
-                          boxShadow: '0 4px 20px rgba(0,0,0,0.04)',
-                        }}
-                      >
-                        <div style={{ display: 'flex', gap: '0.85rem', alignItems: 'flex-start' }}>
-                          {r.image ? (
-                            <img src={r.image} alt={r.name}
-                              style={{ width: '44px', height: '44px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
-                          ) : (
-                            <div style={{
-                              width: '44px', height: '44px', borderRadius: '50%', flexShrink: 0,
-                              background: `hsl(${(r.name.charCodeAt(0) * 37) % 360}, 55%, 88%)`,
-                              display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              fontWeight: '800', fontSize: '1rem',
-                              color: `hsl(${(r.name.charCodeAt(0) * 37) % 360}, 55%, 35%)`,
-                            }}>
-                              {r.name.charAt(0).toUpperCase()}
-                            </div>
-                          )}
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.25rem' }}>
-                              <span style={{ fontWeight: '700', fontSize: '0.92rem', color: 'var(--secondary)' }}>{r.name}</span>
-                              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{r.date}</span>
-                            </div>
-                            <div style={{ display: 'flex', gap: '0.15rem', marginBottom: '0.5rem' }}>
-                              {[...Array(5)].map((_, i) => (
-                                <Star key={i} size={13}
-                                  fill={i < r.rating ? '#f59e0b' : '#e5e7eb'}
-                                  color={i < r.rating ? '#f59e0b' : '#e5e7eb'} />
-                              ))}
-                            </div>
-                            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: '1.6', margin: 0 }}>
-                              {r.comment}
-                            </p>
+                <AnimatePresence>
+                  {[...reviews].reverse().slice(0, 5).map((r, idx) => (
+                    <motion.div
+                      key={r.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.4, delay: idx * 0.06 }}
+                      style={{
+                        background: 'white', borderRadius: '20px',
+                        padding: isMobile ? '1.1rem' : '1.4rem 1.5rem',
+                        border: '1px solid rgba(194,65,12,0.07)',
+                        boxShadow: '0 4px 24px rgba(0,0,0,0.05)',
+                        position: 'relative', overflow: 'hidden',
+                      }}
+                    >
+                      {/* Accent top strip */}
+                      <div style={{
+                        position: 'absolute', top: 0, left: 0, right: 0, height: '3px',
+                        background: r.rating >= 4
+                          ? 'linear-gradient(90deg, #f59e0b, #d97706)'
+                          : r.rating === 3
+                          ? 'linear-gradient(90deg, #94a3b8, #64748b)'
+                          : 'linear-gradient(90deg, #f87171, #ef4444)',
+                      }} />
+
+                      {/* Big quote mark */}
+                      <div style={{
+                        position: 'absolute', top: '10px', right: '14px',
+                        fontSize: '4rem', lineHeight: 1, color: 'rgba(194,65,12,0.06)',
+                        fontFamily: 'Georgia, serif', fontWeight: '900', userSelect: 'none',
+                      }}>"</div>
+
+                      <div style={{ display: 'flex', gap: '0.9rem', alignItems: 'flex-start' }}>
+                        {/* Avatar */}
+                        {r.image ? (
+                          <img src={r.image} alt={r.name} style={{
+                            width: isMobile ? '42px' : '50px',
+                            height: isMobile ? '42px' : '50px',
+                            borderRadius: '14px', objectFit: 'cover', flexShrink: 0,
+                            border: '2px solid rgba(194,65,12,0.1)',
+                          }} />
+                        ) : (
+                          <div style={{
+                            width: isMobile ? '42px' : '50px',
+                            height: isMobile ? '42px' : '50px',
+                            borderRadius: '14px', flexShrink: 0,
+                            background: `linear-gradient(135deg, hsl(${(r.name.charCodeAt(0)*37)%360},55%,82%), hsl(${(r.name.charCodeAt(0)*37)%360},55%,70%))`,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            fontWeight: '800', fontSize: '1.15rem',
+                            color: `hsl(${(r.name.charCodeAt(0)*37)%360},55%,28%)`,
+                          }}>
+                            {r.name.charAt(0).toUpperCase()}
                           </div>
+                        )}
+
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          {/* Name + date row */}
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.35rem' }}>
+                            <div>
+                              <span style={{ fontWeight: '800', fontSize: isMobile ? '0.9rem' : '0.95rem', color: 'var(--secondary)', display: 'block' }}>
+                                {r.name}
+                              </span>
+                            </div>
+                            <span style={{
+                              fontSize: '0.7rem', color: 'var(--text-muted)',
+                              whiteSpace: 'nowrap', flexShrink: 0,
+                              background: '#f8f8f8', padding: '0.2rem 0.6rem',
+                              borderRadius: '20px',
+                            }}>
+                              {r.date}
+                            </span>
+                          </div>
+
+                          {/* Stars */}
+                          <div style={{ display: 'flex', gap: '2px', marginBottom: '0.6rem', alignItems: 'center' }}>
+                            {[...Array(5)].map((_, i) => (
+                              <Star key={i} size={isMobile ? 12 : 14}
+                                fill={i < r.rating ? '#f59e0b' : '#e5e7eb'}
+                                color={i < r.rating ? '#f59e0b' : '#e5e7eb'} />
+                            ))}
+                            <span style={{ fontSize: '0.72rem', color: '#f59e0b', fontWeight: '700', marginLeft: '4px' }}>
+                              {r.rating}.0
+                            </span>
+                          </div>
+
+                          {/* Comment */}
+                          <p style={{
+                            fontSize: isMobile ? '0.83rem' : '0.88rem',
+                            color: '#555', lineHeight: '1.7', margin: 0,
+                            fontStyle: 'italic',
+                          }}>
+                            "{r.comment}"
+                          </p>
                         </div>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-                </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
 
                 {reviews.length > 5 && (
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     onClick={() => setShowAllReviews(true)}
                     style={{
-                      width: '100%', padding: '0.75rem',
-                      borderRadius: '14px', border: '1.5px solid rgba(194,65,12,0.15)',
-                      background: 'transparent', color: 'var(--primary)',
-                      fontWeight: '700', fontSize: '0.88rem', cursor: 'pointer',
-                      transition: 'all 0.2s', marginTop: '0.25rem',
+                      width: '100%', padding: '1rem',
+                      borderRadius: '16px',
+                      border: '2px solid rgba(194,65,12,0.15)',
+                      background: 'white', color: 'var(--primary)',
+                      fontWeight: '700', fontSize: '0.9rem', cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                      transition: 'all 0.2s',
                     }}
-                    onMouseEnter={e => e.currentTarget.style.background = 'var(--primary-light)'}
-                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                    onMouseEnter={e => { e.currentTarget.style.background = 'var(--primary)'; e.currentTarget.style.color = 'white'; e.currentTarget.style.borderColor = 'var(--primary)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'white'; e.currentTarget.style.color = 'var(--primary)'; e.currentTarget.style.borderColor = 'rgba(194,65,12,0.15)'; }}
                   >
-                    Read All {reviews.length} Reviews ↓
-                  </button>
+                    <Star size={15} /> Read All {reviews.length} Reviews
+                  </motion.button>
                 )}
               </>
             )}
@@ -519,209 +667,223 @@ const UserStory = ({ onViewChange }) => {
               Your review helps others discover authentic clay crafts.
             </p>
 
-            <AnimatePresence mode="wait">
-              {reviewDone ? (
-                <motion.div
-                  key="done"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                  style={{
-                    textAlign: 'center', padding: '2.5rem 1rem',
-                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem',
-                  }}
-                >
-                  <CheckCircle size={48} color="var(--success)" strokeWidth={1.5} />
-                  <h4 style={{ fontSize: '1.15rem', color: 'var(--secondary)' }}>Shukriya!</h4>
-                  <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem' }}>Your review has been posted.</p>
-                  <button
-                    onClick={() => { setReviewDone(false); setReviewForm({ name: '', email: '', phone: '', rating: 0, comment: '', image: null }); }}
+            <div>
+              <AnimatePresence mode="wait">
+                {reviewDone ? (
+                  <motion.div
+                    key="done"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
                     style={{
-                      marginTop: '0.5rem', padding: '0.6rem 1.5rem',
-                      borderRadius: '100px', border: 'none', cursor: 'pointer',
-                      background: 'var(--primary-light)', color: 'var(--primary)',
-                      fontWeight: '700', fontSize: '0.85rem',
+                      textAlign: 'center', padding: '2.5rem 1rem',
+                      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem',
                     }}
                   >
-                    Write Another
-                  </button>
-                </motion.div>
-              ) : (
-                <motion.form
-                  key="form"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const hasContact = reviewForm.email.trim() || reviewForm.phone.trim();
-                    if (!reviewForm.name.trim() || !reviewForm.comment.trim() || !hasContact || reviewForm.rating === 0) return;
-                    const newReview = {
-                      id: Date.now(),
-                      name: reviewForm.name.trim(),
-                      email: reviewForm.email.trim(),
-                      phone: reviewForm.phone.trim(),
-                      rating: reviewForm.rating,
-                      comment: reviewForm.comment.trim(),
-                      image: reviewForm.image,
-                      date: new Date().toLocaleString('en-PK', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }),
-                    };
-                    const updated = [...reviews, newReview];
-                    setReviews(updated);
-                    localStorage.setItem('rp_reviews', JSON.stringify(updated));
-                    setReviewDone(true);
-                  }}
-                  style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
-                >
-                  {/* Star Rating */}
-                  <div>
-                    <label style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--secondary)', display: 'block', marginBottom: '0.4rem' }}>
-                      Rating * {reviewForm.rating === 0 && <span style={{ color: 'var(--danger)', fontWeight: '400', fontSize: '0.75rem' }}>— star select karna zaroori hai</span>}
-                    </label>
-                    <div style={{ display: 'flex', gap: '0.35rem' }}>
-                      {[1,2,3,4,5].map(n => (
-                        <button
-                          key={n} type="button"
-                          onClick={() => setReviewForm(f => ({ ...f, rating: n }))}
-                          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '2px' }}
-                        >
-                          <Star size={28}
-                            fill={n <= reviewForm.rating ? '#f59e0b' : '#e5e7eb'}
-                            color={n <= reviewForm.rating ? '#f59e0b' : '#e5e7eb'}
-                            style={{ transition: 'all 0.15s' }}
-                          />
-                        </button>
-                      ))}
+                    <div style={{
+                      width: '72px', height: '72px', borderRadius: '50%',
+                      background: 'rgba(34,197,94,0.1)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}>
+                      <CheckCircle size={36} color="var(--success)" strokeWidth={1.5} />
                     </div>
-                  </div>
-
-                  {/* Name */}
-                  <div>
-                    <label style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--secondary)', display: 'block', marginBottom: '0.4rem' }}>Your Name *</label>
-                    <input
-                      type="text" required
-                      value={reviewForm.name}
-                      onChange={e => setReviewForm(f => ({ ...f, name: e.target.value }))}
-                      placeholder="e.g. Fatima Khan"
+                    <h4 style={{ fontSize: '1.2rem', color: 'var(--secondary)', margin: '0.5rem 0 0.25rem' }}>Shukriya!</h4>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', maxWidth: '220px', lineHeight: '1.6' }}>
+                      Aapka review post ho gaya. Jazak Allah Khair!
+                    </p>
+                    <button
+                      onClick={() => { setReviewDone(false); setReviewForm({ name: '', email: '', phone: '', rating: 0, comment: '', image: null }); }}
                       style={{
-                        width: '100%', padding: '0.75rem 1rem', borderRadius: '12px',
-                        border: '1.5px solid #eee', background: '#fafafa',
-                        fontSize: '0.88rem', outline: 'none', boxSizing: 'border-box',
-                        transition: 'border 0.2s',
+                        marginTop: '0.75rem', padding: '0.7rem 1.75rem',
+                        borderRadius: '100px', border: 'none', cursor: 'pointer',
+                        background: 'linear-gradient(135deg, var(--primary), #e55a00)',
+                        color: 'white', fontWeight: '700', fontSize: '0.88rem',
+                        boxShadow: '0 4px 14px rgba(194,65,12,0.25)',
                       }}
-                      onFocus={e => e.target.style.borderColor = 'var(--primary)'}
-                      onBlur={e => e.target.style.borderColor = '#eee'}
-                    />
-                  </div>
-
-                  {/* Email + Phone */}
-                  <div>
-                    <label style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--secondary)', display: 'block', marginBottom: '0.4rem' }}>
-                      Contact{' '}
-                      <span style={{ color: 'var(--danger)', fontWeight: '400', fontSize: '0.75rem' }}>* kam az kam ek zaroori</span>
-                    </label>
-                    <div style={{ display: 'flex', gap: '0.65rem', flexDirection: isMobile ? 'column' : 'row' }}>
-                      <input
-                        type="email"
-                        value={reviewForm.email}
-                        onChange={e => setReviewForm(f => ({ ...f, email: e.target.value }))}
-                        placeholder="Email (optional)"
-                        style={{
-                          flex: 1, padding: '0.75rem 1rem', borderRadius: '12px',
-                          border: '1.5px solid #eee', background: '#fafafa',
-                          fontSize: '0.88rem', outline: 'none', boxSizing: 'border-box',
-                          transition: 'border 0.2s',
-                        }}
-                        onFocus={e => e.target.style.borderColor = 'var(--primary)'}
-                        onBlur={e => e.target.style.borderColor = '#eee'}
-                      />
-                      <input
-                        type="tel"
-                        value={reviewForm.phone}
-                        onChange={e => setReviewForm(f => ({ ...f, phone: e.target.value }))}
-                        placeholder="Phone (optional)"
-                        style={{
-                          flex: 1, padding: '0.75rem 1rem', borderRadius: '12px',
-                          border: '1.5px solid #eee', background: '#fafafa',
-                          fontSize: '0.88rem', outline: 'none', boxSizing: 'border-box',
-                          transition: 'border 0.2s',
-                        }}
-                        onFocus={e => e.target.style.borderColor = 'var(--primary)'}
-                        onBlur={e => e.target.style.borderColor = '#eee'}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Comment */}
-                  <div>
-                    <label style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--secondary)', display: 'block', marginBottom: '0.4rem' }}>Your Review *</label>
-                    <textarea
-                      required rows={4}
-                      value={reviewForm.comment}
-                      onChange={e => setReviewForm(f => ({ ...f, comment: e.target.value }))}
-                      placeholder="Share your experience with the product..."
-                      style={{
-                        width: '100%', padding: '0.75rem 1rem', borderRadius: '12px',
-                        border: '1.5px solid #eee', background: '#fafafa',
-                        fontSize: '0.88rem', outline: 'none', resize: 'vertical',
-                        fontFamily: 'inherit', lineHeight: '1.6', boxSizing: 'border-box',
-                        transition: 'border 0.2s',
-                      }}
-                      onFocus={e => e.target.style.borderColor = 'var(--primary)'}
-                      onBlur={e => e.target.style.borderColor = '#eee'}
-                    />
-                  </div>
-
-                  {/* Image Upload (optional) */}
-                  <div>
-                    <label style={{ fontSize: '0.8rem', fontWeight: '700', color: 'var(--secondary)', display: 'block', marginBottom: '0.4rem' }}>
-                      Photo <span style={{ color: 'var(--text-muted)', fontWeight: '400' }}>(optional)</span>
-                    </label>
-                    <label style={{
-                      display: 'flex', alignItems: 'center', gap: '0.6rem',
-                      padding: '0.7rem 1rem', borderRadius: '12px',
-                      border: '1.5px dashed #ddd', background: '#fafafa',
-                      cursor: 'pointer', fontSize: '0.85rem', color: 'var(--text-muted)',
-                      transition: 'border 0.2s',
-                    }}
-                      onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--primary)'}
-                      onMouseLeave={e => e.currentTarget.style.borderColor = '#ddd'}
                     >
-                      <Camera size={16} color="var(--primary)" />
-                      {reviewForm.image ? 'Photo selected ✓' : 'Upload a photo of your product'}
-                      <input
-                        type="file" accept="image/*" hidden
-                        onChange={e => {
-                          const file = e.target.files[0];
-                          if (!file) return;
-                          const reader = new FileReader();
-                          reader.onload = ev => setReviewForm(f => ({ ...f, image: ev.target.result }));
-                          reader.readAsDataURL(file);
-                        }}
-                      />
-                    </label>
-                  </div>
+                      Aur Likhein
+                    </button>
+                  </motion.div>
+                ) : (
+                  <motion.form
+                    key="form"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      const hasContact = reviewForm.email.trim() || reviewForm.phone.trim();
+                      if (!reviewForm.name.trim() || !reviewForm.comment.trim() || !hasContact || reviewForm.rating === 0) return;
+                      const newReview = {
+                        id: Date.now(),
+                        name: reviewForm.name.trim(),
+                        email: reviewForm.email.trim(),
+                        phone: reviewForm.phone.trim(),
+                        rating: reviewForm.rating,
+                        comment: reviewForm.comment.trim(),
+                        image: reviewForm.image,
+                        date: new Date().toLocaleString('en-PK', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }),
+                      };
+                      const updated = [...reviews, newReview];
+                      setReviews(updated);
+                      localStorage.setItem('rp_reviews', JSON.stringify(updated));
+                      setReviewDone(true);
+                    }}
+                    style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}
+                  >
+                    {/* Star Rating */}
+                    <div style={{
+                      background: '#fafaf9', borderRadius: '14px',
+                      padding: '1rem 1.1rem',
+                      border: '1.5px solid',
+                      borderColor: reviewForm.rating > 0 ? 'rgba(245,158,11,0.3)' : '#f0f0f0',
+                    }}>
+                      <label style={{ fontSize: '0.78rem', fontWeight: '700', color: 'var(--secondary)', display: 'block', marginBottom: '0.6rem' }}>
+                        Rating *{' '}
+                        {reviewForm.rating === 0 && <span style={{ color: '#f87171', fontWeight: '500' }}>— zaroor select karein</span>}
+                        {reviewForm.rating > 0 && <span style={{ color: '#f59e0b', fontWeight: '600' }}>— {['','Bekar','Kharab','Theek Hai','Acha','Zabardast!'][reviewForm.rating]}</span>}
+                      </label>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        {[1,2,3,4,5].map(n => (
+                          <button key={n} type="button"
+                            onClick={() => setReviewForm(f => ({ ...f, rating: n }))}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '2px', transition: 'transform 0.15s' }}
+                            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.2)'}
+                            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                          >
+                            <Star size={30}
+                              fill={n <= reviewForm.rating ? '#f59e0b' : '#e5e7eb'}
+                              color={n <= reviewForm.rating ? '#f59e0b' : '#e5e7eb'} />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
 
-                  {/* Submit */}
-                  <button
-                    type="submit"
-                    style={{
-                      width: '100%', padding: '0.85rem',
+                    {/* Name */}
+                    <div>
+                      <label style={{ fontSize: '0.78rem', fontWeight: '700', color: 'var(--secondary)', display: 'block', marginBottom: '0.4rem' }}>
+                        Aapka Naam *
+                      </label>
+                      <input type="text" required
+                        value={reviewForm.name}
+                        onChange={e => setReviewForm(f => ({ ...f, name: e.target.value }))}
+                        placeholder="Mثلاً: Fatima Khan"
+                        style={{
+                          width: '100%', padding: '0.8rem 1rem', borderRadius: '12px',
+                          border: '1.5px solid #eee', background: '#fafafa',
+                          fontSize: '0.88rem', outline: 'none', boxSizing: 'border-box',
+                          transition: 'border-color 0.2s',
+                        }}
+                        onFocus={e => e.target.style.borderColor = 'var(--primary)'}
+                        onBlur={e => e.target.style.borderColor = '#eee'}
+                      />
+                    </div>
+
+                    {/* Contact */}
+                    <div>
+                      <label style={{ fontSize: '0.78rem', fontWeight: '700', color: 'var(--secondary)', display: 'block', marginBottom: '0.4rem' }}>
+                        Contact <span style={{ color: '#f87171', fontWeight: '500', fontSize: '0.73rem' }}>* kam az kam ek zaroori</span>
+                      </label>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.65rem' }}>
+                        <input type="email"
+                          value={reviewForm.email}
+                          onChange={e => setReviewForm(f => ({ ...f, email: e.target.value }))}
+                          placeholder="Email"
+                          style={{
+                            padding: '0.8rem 1rem', borderRadius: '12px',
+                            border: '1.5px solid #eee', background: '#fafafa',
+                            fontSize: '0.85rem', outline: 'none', boxSizing: 'border-box',
+                            transition: 'border-color 0.2s',
+                          }}
+                          onFocus={e => e.target.style.borderColor = 'var(--primary)'}
+                          onBlur={e => e.target.style.borderColor = '#eee'}
+                        />
+                        <input type="tel"
+                          value={reviewForm.phone}
+                          onChange={e => setReviewForm(f => ({ ...f, phone: e.target.value }))}
+                          placeholder="Phone"
+                          style={{
+                            padding: '0.8rem 1rem', borderRadius: '12px',
+                            border: '1.5px solid #eee', background: '#fafafa',
+                            fontSize: '0.85rem', outline: 'none', boxSizing: 'border-box',
+                            transition: 'border-color 0.2s',
+                          }}
+                          onFocus={e => e.target.style.borderColor = 'var(--primary)'}
+                          onBlur={e => e.target.style.borderColor = '#eee'}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Comment */}
+                    <div>
+                      <label style={{ fontSize: '0.78rem', fontWeight: '700', color: 'var(--secondary)', display: 'block', marginBottom: '0.4rem' }}>
+                        Aapka Tajruba *
+                      </label>
+                      <textarea required rows={4}
+                        value={reviewForm.comment}
+                        onChange={e => setReviewForm(f => ({ ...f, comment: e.target.value }))}
+                        placeholder="Product kaisa laga? Quality, delivery, overall experience..."
+                        style={{
+                          width: '100%', padding: '0.8rem 1rem', borderRadius: '12px',
+                          border: '1.5px solid #eee', background: '#fafafa',
+                          fontSize: '0.87rem', outline: 'none', resize: 'vertical',
+                          fontFamily: 'inherit', lineHeight: '1.65', boxSizing: 'border-box',
+                          transition: 'border-color 0.2s',
+                        }}
+                        onFocus={e => e.target.style.borderColor = 'var(--primary)'}
+                        onBlur={e => e.target.style.borderColor = '#eee'}
+                      />
+                    </div>
+
+                    {/* Photo */}
+                    <div>
+                      <label style={{ fontSize: '0.78rem', fontWeight: '700', color: 'var(--secondary)', display: 'block', marginBottom: '0.4rem' }}>
+                        Photo <span style={{ color: 'var(--text-muted)', fontWeight: '400' }}>(optional)</span>
+                      </label>
+                      <label style={{
+                        display: 'flex', alignItems: 'center', gap: '0.65rem',
+                        padding: '0.8rem 1rem', borderRadius: '12px',
+                        border: `1.5px dashed ${reviewForm.image ? 'var(--primary)' : '#ddd'}`,
+                        background: reviewForm.image ? 'rgba(194,65,12,0.04)' : '#fafafa',
+                        cursor: 'pointer', fontSize: '0.85rem',
+                        color: reviewForm.image ? 'var(--primary)' : 'var(--text-muted)',
+                        transition: 'all 0.2s',
+                      }}
+                        onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--primary)'}
+                        onMouseLeave={e => e.currentTarget.style.borderColor = reviewForm.image ? 'var(--primary)' : '#ddd'}
+                      >
+                        <Camera size={16} color="var(--primary)" />
+                        {reviewForm.image ? '✓ Photo selected' : 'Product ki photo upload karein'}
+                        <input type="file" accept="image/*" hidden
+                          onChange={e => {
+                            const file = e.target.files[0];
+                            if (!file) return;
+                            const reader = new FileReader();
+                            reader.onload = ev => setReviewForm(f => ({ ...f, image: ev.target.result }));
+                            reader.readAsDataURL(file);
+                          }}
+                        />
+                      </label>
+                    </div>
+
+                    {/* Submit */}
+                    <button type="submit" style={{
+                      width: '100%', padding: '1rem',
                       borderRadius: '14px', border: 'none', cursor: 'pointer',
                       background: 'linear-gradient(135deg, var(--primary), #e55a00)',
                       color: 'white', fontWeight: '700', fontSize: '0.95rem',
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      gap: '0.5rem', boxShadow: '0 6px 20px rgba(194,65,12,0.25)',
+                      gap: '0.5rem', boxShadow: '0 8px 24px rgba(194,65,12,0.3)',
                       transition: 'all 0.2s', marginTop: '0.25rem',
                     }}
-                    onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                    onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
-                  >
-                    <Send size={16} /> Post Review
-                  </button>
-                </motion.form>
-              )}
-            </AnimatePresence>
+                      onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 28px rgba(194,65,12,0.4)'; }}
+                      onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(194,65,12,0.3)'; }}
+                    >
+                      <Send size={16} /> Review Post Karein
+                    </button>
+                  </motion.form>
+                )}
+              </AnimatePresence>
           </div>
         </div>
       </section>
