@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { db } from '../firebase';
+import { doc, onSnapshot, setDoc } from 'firebase/firestore';
 
 const defaultSettings = {
   name: 'Riwaayat Pots',
@@ -22,10 +24,28 @@ export const StoreProvider = ({ children }) => {
     }
   });
 
+  useEffect(() => {
+    localStorage.setItem('rp_store_settings', JSON.stringify(settings));
+  }, [settings]);
+
+  useEffect(() => {
+    if (!db) return;
+    const unsubscribe = onSnapshot(doc(db, "settings", "store"), (docSnap) => {
+      if (docSnap.exists()) {
+        setSettings(prev => ({ ...defaultSettings, ...docSnap.data() }));
+      } else {
+        setDoc(doc(db, "settings", "store"), settings).catch(e => console.error(e));
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
   const updateSettings = (newSettings) => {
     const merged = { ...settings, ...newSettings };
     setSettings(merged);
-    localStorage.setItem('rp_store_settings', JSON.stringify(merged));
+    if (db) {
+      setDoc(doc(db, "settings", "store"), merged).catch(e => console.error(e));
+    }
   };
 
   return (
