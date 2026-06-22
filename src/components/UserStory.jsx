@@ -767,7 +767,7 @@ const UserStory = ({ onViewChange }) => {
                       <input type="text" required
                         value={reviewForm.name}
                         onChange={e => setReviewForm(f => ({ ...f, name: e.target.value }))}
-                        placeholder="Mثلاً: Fatima Khan"
+                        placeholder="e.g. Fatima Khan"
                         style={{
                           width: '100%', padding: '0.8rem 1rem', borderRadius: '12px',
                           border: '1.5px solid #eee', background: '#fafafa',
@@ -885,6 +885,7 @@ const UserStory = ({ onViewChange }) => {
                 )}
               </AnimatePresence>
           </div>
+        </div>
         </div>
       </section>
 
