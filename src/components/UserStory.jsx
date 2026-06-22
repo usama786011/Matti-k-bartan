@@ -82,7 +82,7 @@ const UserStory = ({ onViewChange }) => {
 
   return (
     <div>
-      
+
       {/* 1. HERO BANNER */}
       <section style={{
         height: isMobile ? '60vh' : '85vh',
@@ -259,7 +259,7 @@ const UserStory = ({ onViewChange }) => {
         </div>
       </section>
 
-  
+
 
       {/* 6. DYNAMIC CATEGORY GRIDS */}
       {dynamicCategories && dynamicCategories.map((category, idx) => {
@@ -348,7 +348,7 @@ const UserStory = ({ onViewChange }) => {
       })}
 
 
-    
+
       {/* 9. SIGNATURE SPOTLIGHT: MITTI KA COOLER */}
       <section style={{ marginBottom: '8rem' }}>
         <motion.div
@@ -445,10 +445,10 @@ const UserStory = ({ onViewChange }) => {
                 {(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)}
               </div>
               <div style={{ display: 'flex', gap: '3px', justifyContent: 'center', marginTop: '0.4rem' }}>
-                {[1,2,3,4,5].map(n => (
+                {[1, 2, 3, 4, 5].map(n => (
                   <Star key={n} size={isMobile ? 13 : 16}
-                    fill={n <= Math.round(reviews.reduce((s,r) => s+r.rating,0)/reviews.length) ? '#f59e0b' : '#4b3010'}
-                    color={n <= Math.round(reviews.reduce((s,r) => s+r.rating,0)/reviews.length) ? '#f59e0b' : '#4b3010'} />
+                    fill={n <= Math.round(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length) ? '#f59e0b' : '#4b3010'}
+                    color={n <= Math.round(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length) ? '#f59e0b' : '#4b3010'} />
                 ))}
               </div>
               <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.72rem', marginTop: '0.3rem' }}>
@@ -461,7 +461,7 @@ const UserStory = ({ onViewChange }) => {
 
             {/* Star breakdown */}
             <div style={{ flex: 1, minWidth: isMobile ? '100%' : '200px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {[5,4,3,2,1].map(n => {
+              {[5, 4, 3, 2, 1].map(n => {
                 const count = reviews.filter(r => r.rating === n).length;
                 const pct = reviews.length ? (count / reviews.length) * 100 : 0;
                 return (
@@ -522,10 +522,10 @@ const UserStory = ({ onViewChange }) => {
                   <Star size={28} color="var(--primary)" strokeWidth={1.5} />
                 </div>
                 <h4 style={{ fontSize: '1rem', color: 'var(--secondary)', marginBottom: '0.4rem' }}>
-                  Abhi tak koi review nahi
+                  Be the First to Review
                 </h4>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                  Pehli review likhein aur doosron ki rahnumai karein!
+                  Share your experience and help others make informed decisions.
                 </p>
               </div>
             ) : (
@@ -552,8 +552,8 @@ const UserStory = ({ onViewChange }) => {
                         background: r.rating >= 4
                           ? 'linear-gradient(90deg, #f59e0b, #d97706)'
                           : r.rating === 3
-                          ? 'linear-gradient(90deg, #94a3b8, #64748b)'
-                          : 'linear-gradient(90deg, #f87171, #ef4444)',
+                            ? 'linear-gradient(90deg, #94a3b8, #64748b)'
+                            : 'linear-gradient(90deg, #f87171, #ef4444)',
                       }} />
 
                       {/* Big quote mark */}
@@ -577,10 +577,10 @@ const UserStory = ({ onViewChange }) => {
                             width: isMobile ? '42px' : '50px',
                             height: isMobile ? '42px' : '50px',
                             borderRadius: '14px', flexShrink: 0,
-                            background: `linear-gradient(135deg, hsl(${(r.name.charCodeAt(0)*37)%360},55%,82%), hsl(${(r.name.charCodeAt(0)*37)%360},55%,70%))`,
+                            background: `linear-gradient(135deg, hsl(${(r.name.charCodeAt(0) * 37) % 360},55%,82%), hsl(${(r.name.charCodeAt(0) * 37) % 360},55%,70%))`,
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             fontWeight: '800', fontSize: '1.15rem',
-                            color: `hsl(${(r.name.charCodeAt(0)*37)%360},55%,28%)`,
+                            color: `hsl(${(r.name.charCodeAt(0) * 37) % 360},55%,28%)`,
                           }}>
                             {r.name.charAt(0).toUpperCase()}
                           </div>
@@ -740,11 +740,11 @@ const UserStory = ({ onViewChange }) => {
                     }}>
                       <label style={{ fontSize: '0.78rem', fontWeight: '700', color: 'var(--secondary)', display: 'block', marginBottom: '0.6rem' }}>
                         Rating *{' '}
-                        {reviewForm.rating === 0 && <span style={{ color: '#f87171', fontWeight: '500' }}>— zaroor select karein</span>}
-                        {reviewForm.rating > 0 && <span style={{ color: '#f59e0b', fontWeight: '600' }}>— {['','Bekar','Kharab','Theek Hai','Acha','Zabardast!'][reviewForm.rating]}</span>}
+                        {reviewForm.rating === 0 && <span style={{ color: '#f87171', fontWeight: '500' }}>— Select One</span>}
+                        {reviewForm.rating > 0 && <span style={{ color: '#f59e0b', fontWeight: '600' }}>— {['', 'Bekar', 'Kharab', 'Theek Hai', 'Acha', 'Zabardast!'][reviewForm.rating]}</span>}
                       </label>
                       <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        {[1,2,3,4,5].map(n => (
+                        {[1, 2, 3, 4, 5].map(n => (
                           <button key={n} type="button"
                             onClick={() => setReviewForm(f => ({ ...f, rating: n }))}
                             style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '2px', transition: 'transform 0.15s' }}
@@ -762,12 +762,12 @@ const UserStory = ({ onViewChange }) => {
                     {/* Name */}
                     <div>
                       <label style={{ fontSize: '0.78rem', fontWeight: '700', color: 'var(--secondary)', display: 'block', marginBottom: '0.4rem' }}>
-                        Aapka Naam *
+                        Your Name *
                       </label>
                       <input type="text" required
                         value={reviewForm.name}
                         onChange={e => setReviewForm(f => ({ ...f, name: e.target.value }))}
-                        placeholder="e.g. Fatima Khan"
+                        placeholder="Riwaayat Pots"
                         style={{
                           width: '100%', padding: '0.8rem 1rem', borderRadius: '12px',
                           border: '1.5px solid #eee', background: '#fafafa',
@@ -782,7 +782,7 @@ const UserStory = ({ onViewChange }) => {
                     {/* Contact */}
                     <div>
                       <label style={{ fontSize: '0.78rem', fontWeight: '700', color: 'var(--secondary)', display: 'block', marginBottom: '0.4rem' }}>
-                        Contact <span style={{ color: '#f87171', fontWeight: '500', fontSize: '0.73rem' }}>* kam az kam ek zaroori</span>
+                        Contact <span style={{ color: '#f87171', fontWeight: '500', fontSize: '0.73rem' }}>* Select One</span>
                       </label>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.65rem' }}>
                         <input type="email"
@@ -817,12 +817,12 @@ const UserStory = ({ onViewChange }) => {
                     {/* Comment */}
                     <div>
                       <label style={{ fontSize: '0.78rem', fontWeight: '700', color: 'var(--secondary)', display: 'block', marginBottom: '0.4rem' }}>
-                        Aapka Tajruba *
+                        Your Review *
                       </label>
                       <textarea required rows={4}
                         value={reviewForm.comment}
                         onChange={e => setReviewForm(f => ({ ...f, comment: e.target.value }))}
-                        placeholder="Product kaisa laga? Quality, delivery, overall experience..."
+                        placeholder="Quality, delivery, overall experience..."
                         style={{
                           width: '100%', padding: '0.8rem 1rem', borderRadius: '12px',
                           border: '1.5px solid #eee', background: '#fafafa',
@@ -853,7 +853,7 @@ const UserStory = ({ onViewChange }) => {
                         onMouseLeave={e => e.currentTarget.style.borderColor = reviewForm.image ? 'var(--primary)' : '#ddd'}
                       >
                         <Camera size={16} color="var(--primary)" />
-                        {reviewForm.image ? '✓ Photo selected' : 'Product ki photo upload karein'}
+                        {reviewForm.image ? '✓ Photo selected' : 'Select Product Image'}
                         <input type="file" accept="image/*" hidden
                           onChange={e => {
                             const file = e.target.files[0];
@@ -884,8 +884,8 @@ const UserStory = ({ onViewChange }) => {
                   </motion.form>
                 )}
               </AnimatePresence>
+            </div>
           </div>
-        </div>
         </div>
       </section>
 

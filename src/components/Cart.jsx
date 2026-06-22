@@ -157,7 +157,7 @@ const Cart = ({ onBack }) => {
         }}>
           <ShoppingBag size={40} />
         </div>
-        <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Your bag is empty</h2>
+        <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Your cart is empty</h2>
         <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Discover our unique handcrafted pottery pieces.</p>
         <button
           onClick={onBack}
@@ -195,7 +195,7 @@ const Cart = ({ onBack }) => {
             <ArrowLeft size={18} /> {isCheckingOut ? 'Back to Bag' : 'Continue Shopping'}
           </button>
           <h2 style={{ fontSize: '2rem', fontFamily: 'var(--font-heading)', color: 'var(--secondary)', fontWeight: '600' }}>
-            {isCheckingOut ? 'Secure Checkout' : 'Your Shopping Bag'}
+            {isCheckingOut ? 'Secure Checkout' : 'Your Shopping Cart'}
           </h2>
         </div>
         {!isCheckingOut && (
@@ -225,7 +225,7 @@ const Cart = ({ onBack }) => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                   <label style={{ fontSize: '0.9rem', fontWeight: '600' }}>Full Name</label>
                   <input
-                    type="text" required placeholder="John Doe"
+                    type="text" required placeholder="Riwaayat Pots"
                     value={shippingData.name}
                     onChange={(e) => setShippingData({ ...shippingData, name: e.target.value })}
                     style={{ padding: '0.85rem', borderRadius: '12px', border: '1px solid #eee', background: '#f9f9f9', outline: 'none' }}
@@ -235,7 +235,7 @@ const Cart = ({ onBack }) => {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                     <label style={{ fontSize: '0.9rem', fontWeight: '600' }}>Email Address</label>
                     <input
-                      type="email" required placeholder="john@example.com"
+                      type="email" required placeholder="Riwaayatpots@example.com"
                       value={shippingData.email}
                       onChange={(e) => setShippingData({ ...shippingData, email: e.target.value })}
                       style={{ padding: '0.85rem', borderRadius: '12px', border: '1px solid #eee', background: '#f9f9f9', outline: 'none' }}

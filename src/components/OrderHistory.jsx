@@ -106,7 +106,7 @@ const OrderHistory = ({ onBack }) => {
               fontWeight: '600'
             }}
           >
-            <ArrowLeft size={18} /> Back to Dashboard
+            <ArrowLeft size={18} /> Back to Inventory
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
             <h2 style={{ fontSize: '2.5rem', fontFamily: 'var(--font-heading)', color: 'var(--secondary)' }}>Order History</h2>

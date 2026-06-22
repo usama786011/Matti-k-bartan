@@ -8,7 +8,7 @@ const AdminPanel = ({ isModalOpen, setIsModalOpen, editingProduct, onLogout }) =
   const { addProduct, updateProduct, categories } = useProducts();
   const { showNotification } = useNotification();
   const fileInputRef = useRef(null);
-  
+
   const initialFormState = {
     name: '',
     price: '',
@@ -64,7 +64,7 @@ const AdminPanel = ({ isModalOpen, setIsModalOpen, editingProduct, onLogout }) =
           background: 'rgba(0,0,0,0.6)',
           backdropFilter: 'blur(12px)'
         }}>
-          <motion.div 
+          <motion.div
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -184,28 +184,28 @@ const AdminPanel = ({ isModalOpen, setIsModalOpen, editingProduct, onLogout }) =
             </div>
 
             {/* Right Side: Form Details */}
-            <div style={{ 
-              display: 'flex', 
-              flexDirection: 'column', 
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
               maxHeight: '90vh',
               position: 'relative'
             }}>
-              <div style={{ 
-                padding: '2.5rem', 
-                overflowY: 'auto', 
+              <div style={{
+                padding: '2.5rem',
+                overflowY: 'auto',
                 flex: 1,
                 paddingBottom: '6rem' // Space for fixed button
               }}>
                 <button
                   onClick={() => setIsModalOpen(false)}
                   type="button"
-                  style={{ 
-                    position: 'absolute', 
-                    top: '1.5rem', 
-                    right: '1.5rem', 
-                    color: '#999', 
+                  style={{
+                    position: 'absolute',
+                    top: '1.5rem',
+                    right: '1.5rem',
+                    color: '#999',
                     cursor: 'pointer',
-                    zIndex: 10 
+                    zIndex: 10
                   }}
                 >
                   <X size={24} />
@@ -217,13 +217,13 @@ const AdminPanel = ({ isModalOpen, setIsModalOpen, editingProduct, onLogout }) =
 
                 <form id="admin-form" onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    <label style={{ fontSize: '0.85rem', fontWeight: '700', color: '#555' }}>Art Name</label>
+                    <label style={{ fontSize: '0.85rem', fontWeight: '700', color: '#555' }}>Product Name</label>
                     <input
                       type="text"
                       required
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="e.g. Terracotta Vase"
+                      placeholder="Riwaaywat Pots"
                       style={{
                         padding: '0.9rem',
                         borderRadius: '12px',
@@ -298,7 +298,7 @@ const AdminPanel = ({ isModalOpen, setIsModalOpen, editingProduct, onLogout }) =
                   </div>
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    <label style={{ fontSize: '0.85rem', fontWeight: '700', color: '#555' }}>Artisan Description</label>
+                    <label style={{ fontSize: '0.85rem', fontWeight: '700', color: '#555' }}>Product Description</label>
                     <textarea
                       required
                       rows="4"
@@ -320,13 +320,13 @@ const AdminPanel = ({ isModalOpen, setIsModalOpen, editingProduct, onLogout }) =
                 </form>
               </div>
 
-              <div style={{ 
-                position: 'absolute', 
-                bottom: 0, 
-                left: 0, 
-                right: 0, 
-                padding: '1.5rem 2.5rem', 
-                background: 'white', 
+              <div style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                padding: '1.5rem 2.5rem',
+                background: 'white',
                 borderTop: '1px solid #eee',
                 zIndex: 20
               }}>

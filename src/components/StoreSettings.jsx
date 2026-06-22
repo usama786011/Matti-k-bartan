@@ -62,7 +62,7 @@ const StoreSettings = ({ onBack }) => {
           marginBottom: '1.75rem', padding: '0.5rem 0',
         }}
       >
-        <ArrowLeft size={18} /> Inventory par Wapas
+        <ArrowLeft size={18} /> Back to Inventory
       </motion.button>
 
       {/* Header */}
@@ -84,7 +84,7 @@ const StoreSettings = ({ onBack }) => {
               Store Settings
             </h2>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: 0 }}>
-              Yahan se store ki maloomat update karein — sab jagah automatically update ho jaayegi.
+              Update Your Store Information
             </p>
           </div>
         </div>
@@ -106,11 +106,11 @@ const StoreSettings = ({ onBack }) => {
             }}
           >
             <h3 style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '1.25rem' }}>
-              Store Ki Pehchaan
+              Store Information
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <Field
-                label="Store Ka Naam"
+                label="Store Name"
                 icon={Store}
                 name="name"
                 value={form.name}
@@ -122,7 +122,7 @@ const StoreSettings = ({ onBack }) => {
                   fontSize: '0.8rem', fontWeight: '700', color: 'var(--secondary)',
                   display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.5rem',
                 }}>
-                  <Store size={14} color="var(--primary)" /> Store Ki Tafseel (Footer mein dikhti hai)
+                  <Store size={14} color="var(--primary)" /> Store Description (In Footer)
                 </label>
                 <textarea
                   name="tagline"
@@ -156,7 +156,7 @@ const StoreSettings = ({ onBack }) => {
             }}
           >
             <h3 style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '1.25rem' }}>
-              Rabta Maloomat
+              Contact Information
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               <Field
@@ -202,7 +202,7 @@ const StoreSettings = ({ onBack }) => {
             }}
           >
             <h3 style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '1.25rem' }}>
-              Location aur Timing
+              Location and Timing Update
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <Field
@@ -243,7 +243,7 @@ const StoreSettings = ({ onBack }) => {
             }}
           >
             {saved ? <CheckCircle size={20} /> : <Save size={20} />}
-            {saved ? 'Saved Ho Gaya!' : 'Changes Save Karein'}
+            {saved ? 'Saved....!' : 'Update Changes'}
           </motion.button>
 
         </div>
