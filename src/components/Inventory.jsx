@@ -4,7 +4,7 @@ import { Package, Search, Edit3, Trash2, Plus, ExternalLink, ShieldCheck, AlertC
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Inventory = ({ onAdd, onDelete, onViewChange }) => {
-  const { products, categories, addCategory, deleteCategory, updateProduct } = useProducts();
+  const { products, categories, addCategory, deleteCategory, updateCategory, updateProduct } = useProducts();
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
@@ -12,6 +12,12 @@ const Inventory = ({ onAdd, onDelete, onViewChange }) => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [editingCategory, setEditingCategory] = useState(null);
+  const [editCategoryName, setEditCategoryName] = useState('');
+  
+  const itemsPerPage = 20;
+
   const reviewCount = (() => { try { return JSON.parse(localStorage.getItem('rp_reviews') || '[]').length; } catch { return 0; } })();
 
   const startEdit = (product) => {
@@ -40,11 +46,20 @@ const Inventory = ({ onAdd, onDelete, onViewChange }) => {
     return () => window.removeEventListener('resize', h);
   }, []);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
   const filteredProducts = products.filter(product => 
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     product.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
     product.id.toString().includes(searchTerm)
   );
+
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const activePage = Math.max(1, Math.min(currentPage, totalPages || 1));
+  const startIndex = (activePage - 1) * itemsPerPage;
+  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
 
   const handleDeleteConfirm = () => {
     if (deleteTarget) {
@@ -176,14 +191,14 @@ const Inventory = ({ onAdd, onDelete, onViewChange }) => {
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '700px' }}>
           <thead>
             <tr style={{ borderBottom: '2px solid #f3f3f3' }}>
-              {['Product', 'Category', 'Description', 'Price', 'Quantity', 'Status', 'Actions'].map((col, i) => (
+              {['#', 'Product', 'Category', 'Description', 'Price', 'Quantity', 'Status', 'Actions'].map((col, i) => (
                 <th key={col} style={{
                   padding: isMobile ? '0.9rem 0.75rem' : '1.25rem 1.5rem',
                   color: 'var(--text-muted)', fontWeight: '700',
                   fontSize: isMobile ? '0.75rem' : '0.85rem',
                   textTransform: 'uppercase', letterSpacing: '0.5px',
                   whiteSpace: 'nowrap',
-                  textAlign: i === 6 ? 'right' : 'left',
+                  textAlign: i === 7 ? 'right' : 'left',
                   background: '#fafaf9',
                 }}>
                   {col}
@@ -192,7 +207,7 @@ const Inventory = ({ onAdd, onDelete, onViewChange }) => {
             </tr>
           </thead>
           <tbody>
-            {filteredProducts.length > 0 ? filteredProducts.map((product, idx) => {
+            {paginatedProducts.length > 0 ? paginatedProducts.map((product, idx) => {
               const isEditing = editingId === product.id;
               const p = isMobile ? '0.6rem 0.75rem' : '1rem 1.5rem';
               const inputStyle = {
@@ -207,6 +222,11 @@ const Inventory = ({ onAdd, onDelete, onViewChange }) => {
                   background: isEditing ? '#fffbf7' : idx % 2 === 0 ? 'white' : '#fdfcfb',
                   transition: 'background 0.2s',
                 }}>
+                  {/* S.No */}
+                  <td style={{ padding: p, whiteSpace: 'nowrap', fontWeight: '600', color: 'var(--text-muted)', fontSize: isMobile ? '0.8rem' : '0.88rem' }}>
+                    {startIndex + idx + 1}
+                  </td>
+
                   {/* Product */}
                   <td style={{ padding: p, whiteSpace: 'nowrap' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
@@ -336,7 +356,7 @@ const Inventory = ({ onAdd, onDelete, onViewChange }) => {
                             <Check size={14} /> Save
                           </button>
                           <button onClick={cancelEdit}
-                            style={{ padding: isMobile ? '0.45rem' : '0.5rem', borderRadius: '9px', border: 'none', background: '#f3f3f3', color: '#666', cursor: 'pointer' }}>
+                            style={{ padding: isMobile ? '0.45rem' : '0.55rem', borderRadius: '9px', border: 'none', background: '#f3f3f3', color: '#666', cursor: 'pointer' }}>
                             <X size={14} />
                           </button>
                         </>
@@ -358,7 +378,7 @@ const Inventory = ({ onAdd, onDelete, onViewChange }) => {
               );
             }) : (
               <tr>
-                <td colSpan="7" style={{ padding: '3rem', textAlign: 'center', color: '#999', fontSize: '0.9rem' }}>
+                <td colSpan="8" style={{ padding: '3rem', textAlign: 'center', color: '#999', fontSize: '0.9rem' }}>
                   No products found matching your search.
                 </td>
               </tr>
@@ -366,6 +386,110 @@ const Inventory = ({ onAdd, onDelete, onViewChange }) => {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginTop: '1.5rem',
+          padding: '1rem 1.5rem',
+          background: 'white',
+          borderRadius: '16px',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
+          border: '1px solid #f0f0f0',
+          flexWrap: 'wrap',
+          gap: '1rem'
+        }}>
+          <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+            Showing <span style={{ fontWeight: '600', color: 'var(--secondary)' }}>{startIndex + 1}</span> to{' '}
+            <span style={{ fontWeight: '600', color: 'var(--secondary)' }}>{Math.min(startIndex + itemsPerPage, filteredProducts.length)}</span> of{' '}
+            <span style={{ fontWeight: '600', color: 'var(--secondary)' }}>{filteredProducts.length}</span> products
+          </div>
+          <div style={{ display: 'flex', gap: '0.35rem', alignItems: 'center' }}>
+            <button
+              disabled={activePage === 1}
+              onClick={() => setCurrentPage(activePage - 1)}
+              style={{
+                padding: '0.5rem 0.75rem',
+                borderRadius: '8px',
+                border: '1px solid #ececec',
+                background: activePage === 1 ? '#f5f5f5' : 'white',
+                color: activePage === 1 ? '#ccc' : 'var(--secondary)',
+                cursor: activePage === 1 ? 'not-allowed' : 'pointer',
+                fontSize: '0.85rem',
+                fontWeight: '600',
+                transition: 'all 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.25rem'
+              }}
+            >
+              Previous
+            </button>
+            
+            {(() => {
+              const maxVisible = 5;
+              let start = Math.max(1, activePage - 2);
+              let end = Math.min(totalPages, activePage + 2);
+              if (start === 1) {
+                end = Math.min(totalPages, maxVisible);
+              } else if (end === totalPages) {
+                start = Math.max(1, totalPages - maxVisible + 1);
+              }
+              return Array.from({ length: end - start + 1 }, (_, i) => start + i).map(pageNum => {
+                const isCurrent = pageNum === activePage;
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => setCurrentPage(pageNum)}
+                    style={{
+                      width: '34px',
+                      height: '34px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: '8px',
+                      border: '1.5px solid',
+                      borderColor: isCurrent ? 'var(--primary)' : '#ececec',
+                      background: isCurrent ? 'linear-gradient(135deg, var(--primary), #f59e0b)' : 'white',
+                      color: isCurrent ? 'white' : 'var(--secondary)',
+                      cursor: 'pointer',
+                      fontSize: '0.85rem',
+                      fontWeight: '700',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              });
+            })()}
+
+            <button
+              disabled={activePage === totalPages}
+              onClick={() => setCurrentPage(activePage + 1)}
+              style={{
+                padding: '0.5rem 0.75rem',
+                borderRadius: '8px',
+                border: '1px solid #ececec',
+                background: activePage === totalPages ? '#f5f5f5' : 'white',
+                color: activePage === totalPages ? '#ccc' : 'var(--secondary)',
+                cursor: activePage === totalPages ? 'not-allowed' : 'pointer',
+                fontSize: '0.85rem',
+                fontWeight: '600',
+                transition: 'all 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.25rem'
+              }}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Custom Confirmation Modal */}
       <AnimatePresence>
@@ -492,12 +616,72 @@ const Inventory = ({ onAdd, onDelete, onViewChange }) => {
                 </form>
                 
                 <div style={{ maxHeight: '300px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  {categories.map(cat => (
-                    <div key={cat} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1rem', background: '#f8f9fa', borderRadius: '10px' }}>
-                      <span style={{ fontWeight: '500' }}>{cat}</span>
-                      <button onClick={() => deleteCategory(cat)} style={{ color: 'var(--danger)', padding: '0.5rem' }}><Trash2 size={16} /></button>
-                    </div>
-                  ))}
+                  {categories.map(cat => {
+                    const isEditing = editingCategory === cat;
+                    return (
+                      <div key={cat} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1rem', background: '#f8f9fa', borderRadius: '10px' }}>
+                        {isEditing ? (
+                          <input
+                            type="text"
+                            value={editCategoryName}
+                            onChange={(e) => setEditCategoryName(e.target.value)}
+                            style={{ flex: 1, padding: '0.4rem 0.75rem', marginRight: '0.5rem', borderRadius: '8px', border: '1.5px solid var(--primary)', outline: 'none', fontSize: '0.9rem' }}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                if (editCategoryName.trim() && editCategoryName.trim() !== cat) {
+                                  updateCategory(cat, editCategoryName.trim());
+                                }
+                                setEditingCategory(null);
+                              } else if (e.key === 'Escape') {
+                                setEditingCategory(null);
+                              }
+                            }}
+                            autoFocus
+                          />
+                        ) : (
+                          <span style={{ fontWeight: '500' }}>{cat}</span>
+                        )}
+                        <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center' }}>
+                          {isEditing ? (
+                            <>
+                              <button
+                                onClick={() => {
+                                  if (editCategoryName.trim() && editCategoryName.trim() !== cat) {
+                                    updateCategory(cat, editCategoryName.trim());
+                                  }
+                                  setEditingCategory(null);
+                                }}
+                                style={{ color: '#16a34a', padding: '0.4rem', border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                              >
+                                <Check size={16} />
+                              </button>
+                              <button
+                                onClick={() => setEditingCategory(null)}
+                                style={{ color: '#666', padding: '0.4rem', border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                              >
+                                <X size={16} />
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                onClick={() => { setEditingCategory(cat); setEditCategoryName(cat); }}
+                                style={{ color: '#555', padding: '0.4rem', border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                              >
+                                <Edit3 size={16} />
+                              </button>
+                              <button
+                                onClick={() => deleteCategory(cat)}
+                                style={{ color: 'var(--danger)', padding: '0.4rem', border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
                   {categories.length === 0 && <p style={{ textAlign: 'center', color: '#999', padding: '1rem' }}>No categories found.</p>}
                 </div>
               </div>

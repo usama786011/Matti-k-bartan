@@ -245,8 +245,34 @@ export const ProductProvider = ({ children }) => {
     }
   };
 
+  const updateCategory = (oldName, newName) => {
+    if (!newName || newName.trim() === '' || oldName === newName) return;
+    const cleanNewName = newName.trim();
+    if (categories.includes(cleanNewName)) return;
+
+    setCategories(prev => prev.map(c => c === oldName ? cleanNewName : c));
+    setProducts(prevProducts => prevProducts.map(p =>
+      p.category === oldName ? { ...p, category: cleanNewName } : p
+    ));
+
+    if (db) {
+      setDoc(doc(collection(db, "categories"), cleanNewName), { name: cleanNewName })
+        .then(() => {
+          deleteDoc(doc(db, "categories", oldName)).catch(e => console.error(e));
+        })
+        .catch(e => console.error(e));
+
+      productsRef.current.forEach(p => {
+        if (p.category === oldName) {
+          updateDoc(doc(db, "products", p.id.toString()), { category: cleanNewName })
+            .catch(e => console.error(e));
+        }
+      });
+    }
+  };
+
   return (
-    <ProductContext.Provider value={{ products, addProduct, updateProduct, deleteProduct, adjustStock, tryDeductStock, commitStockToFirebase, categories, addCategory, deleteCategory }}>
+    <ProductContext.Provider value={{ products, addProduct, updateProduct, deleteProduct, adjustStock, tryDeductStock, commitStockToFirebase, categories, addCategory, deleteCategory, updateCategory }}>
       {children}
     </ProductContext.Provider>
   );
