@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Trash2, Trash, ArrowLeft, MessageSquare, AlertTriangle, X, Phone, Mail, Image as ImageIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useProducts } from '../context/ProductContext';
 
-const STORAGE_KEY = 'rp_reviews';
 const PAGE_SIZE = 10;
 
 const AdminReviews = ({ onBack }) => {
-  const [reviews, setReviews] = useState(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : [];
-  });
+  const { reviews, deleteReview, clearAllReviews } = useProducts();
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [confirmDeleteAll, setConfirmDeleteAll] = useState(false);
   const [previewImg, setPreviewImg] = useState(null);
@@ -22,18 +19,13 @@ const AdminReviews = ({ onBack }) => {
     return () => window.removeEventListener('resize', h);
   }, []);
 
-  const save = (updated) => {
-    setReviews(updated);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-  };
-
   const deleteOne = (id) => {
-    save(reviews.filter(r => r.id !== id));
+    deleteReview(id);
     setConfirmDeleteId(null);
   };
 
   const deleteAll = () => {
-    save([]);
+    clearAllReviews();
     setConfirmDeleteAll(false);
     setPage(1);
   };

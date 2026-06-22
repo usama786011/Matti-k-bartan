@@ -4,7 +4,7 @@ import { Package, Search, Edit3, Trash2, Plus, ExternalLink, ShieldCheck, AlertC
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Inventory = ({ onAdd, onDelete, onViewChange }) => {
-  const { products, categories, addCategory, deleteCategory, updateCategory, updateProduct } = useProducts();
+  const { products, categories, addCategory, deleteCategory, updateCategory, updateProduct, reviews } = useProducts();
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
@@ -18,7 +18,7 @@ const Inventory = ({ onAdd, onDelete, onViewChange }) => {
   
   const itemsPerPage = 20;
 
-  const reviewCount = (() => { try { return JSON.parse(localStorage.getItem('rp_reviews') || '[]').length; } catch { return 0; } })();
+  const reviewCount = reviews ? reviews.length : 0;
 
   const startEdit = (product) => {
     setEditingId(product.id);

@@ -11,15 +11,11 @@ import ProductDetailModal from './ProductDetailModal';
 import AllReviewsModal from './AllReviewsModal';
 
 const UserStory = ({ onViewChange }) => {
-  const { products, categories: dynamicCategories } = useProducts();
+  const { products, categories: dynamicCategories, reviews, addReview } = useProducts();
   const { addToCart } = useCart();
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [emailInput, setEmailInput] = useState('');
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [reviews, setReviews] = useState(() => {
-    const saved = localStorage.getItem('rp_reviews');
-    return saved ? JSON.parse(saved) : [];
-  });
   const [reviewForm, setReviewForm] = useState({ name: '', email: '', phone: '', rating: 0, comment: '', image: null });
   const [reviewDone, setReviewDone] = useState(false);
   const [showAllReviews, setShowAllReviews] = useState(false);
@@ -715,7 +711,7 @@ const UserStory = ({ onViewChange }) => {
                       const hasContact = reviewForm.email.trim() || reviewForm.phone.trim();
                       if (!reviewForm.name.trim() || !reviewForm.comment.trim() || !hasContact || reviewForm.rating === 0) return;
                       const newReview = {
-                        id: Date.now(),
+                        id: Date.now().toString(),
                         name: reviewForm.name.trim(),
                         email: reviewForm.email.trim(),
                         phone: reviewForm.phone.trim(),
@@ -724,9 +720,7 @@ const UserStory = ({ onViewChange }) => {
                         image: reviewForm.image,
                         date: new Date().toLocaleString('en-PK', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }),
                       };
-                      const updated = [...reviews, newReview];
-                      setReviews(updated);
-                      localStorage.setItem('rp_reviews', JSON.stringify(updated));
+                      addReview(newReview);
                       setReviewDone(true);
                     }}
                     style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}

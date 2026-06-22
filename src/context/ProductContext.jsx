@@ -12,6 +12,15 @@ export const ProductProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : ['Vases', 'Dining', 'Traditional', 'Garden', 'Lifestyle'];
   });
 
+  const [reviews, setReviews] = useState(() => {
+    const saved = localStorage.getItem('rp_reviews');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('rp_reviews', JSON.stringify(reviews));
+  }, [reviews]);
+
   const [products, setProducts] = useState(() => {
     const saved = localStorage.getItem('wayio_products');
     if (saved) {
@@ -164,9 +173,19 @@ export const ProductProvider = ({ children }) => {
       }
     });
 
+    // Sync reviews
+    const unsubscribeReviews = onSnapshot(collection(db, "reviews"), (snapshot) => {
+      const fbReviews = [];
+      snapshot.forEach(doc => {
+        fbReviews.push({ id: doc.id, ...doc.data() });
+      });
+      setReviews(fbReviews);
+    });
+
     return () => {
       unsubscribeProducts();
       unsubscribeCategories();
+      unsubscribeReviews();
     };
   }, []);
 
@@ -271,8 +290,33 @@ export const ProductProvider = ({ children }) => {
     }
   };
 
+  const addReview = (review) => {
+    const reviewId = review.id ? review.id.toString() : Date.now().toString();
+    const newReview = { ...review, id: reviewId };
+    setReviews(prev => [...prev, newReview]);
+    if (db) {
+      setDoc(doc(db, "reviews", reviewId), newReview).catch(e => console.error(e));
+    }
+  };
+
+  const deleteReview = (id) => {
+    setReviews(prev => prev.filter(r => r.id !== id));
+    if (db) {
+      deleteDoc(doc(db, "reviews", id.toString())).catch(e => console.error(e));
+    }
+  };
+
+  const clearAllReviews = () => {
+    setReviews([]);
+    if (db) {
+      reviews.forEach(r => {
+        deleteDoc(doc(db, "reviews", r.id.toString())).catch(e => console.error(e));
+      });
+    }
+  };
+
   return (
-    <ProductContext.Provider value={{ products, addProduct, updateProduct, deleteProduct, adjustStock, tryDeductStock, commitStockToFirebase, categories, addCategory, deleteCategory, updateCategory }}>
+    <ProductContext.Provider value={{ products, addProduct, updateProduct, deleteProduct, adjustStock, tryDeductStock, commitStockToFirebase, categories, addCategory, deleteCategory, updateCategory, reviews, addReview, deleteReview, clearAllReviews }}>
       {children}
     </ProductContext.Provider>
   );
