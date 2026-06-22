@@ -104,7 +104,7 @@ const AdminReviews = ({ onBack }) => {
   );
 
   return (
-    <div style={{ padding: isMobile ? '0 0.5rem 3rem' : '0 0.5rem 4rem' }}>
+    <div style={{ padding: isMobile ? '0 1rem 3rem' : '0 4rem 4rem' }}>
 
       {/* ── Header ── */}
       <div style={{ marginBottom: '1.75rem' }}>
